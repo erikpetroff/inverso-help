@@ -13,8 +13,9 @@ export function isLocale(value: unknown): value is Locale {
 
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://help.inverso.bg").replace(/\/$/, "");
 
-/** Locale-prefixed path, e.g. localePath("en", "/articles/x") -> "/en/articles/x". */
+/** Public path for a locale: Bulgarian lives at the root, other languages are prefixed ("/en/articles/x"). */
 export function localePath(locale: Locale, path = "/") {
+  if (locale === defaultLocale) return path;
   return `/${locale}${path === "/" ? "" : path}`;
 }
 

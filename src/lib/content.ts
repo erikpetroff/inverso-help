@@ -44,7 +44,7 @@ const DEFAULT_SETTINGS: Record<Locale, Omit<SiteSettings, "mainSiteUrl" | "logoU
 
 async function getDataset(): Promise<Dataset> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   return loadDataset();
 }
@@ -65,7 +65,7 @@ const byOrder = (locale: Locale) => (a: RawCollection | RawArticle, b: RawCollec
 
 function authorOf(data: Dataset, article: RawArticle): Author {
   const author = (article.authorId && data.authors[article.authorId]) || DEFAULT_AUTHOR;
-  return { ...author, avatarUrl: author.avatarUrl ?? "/brand/avatar.png" };
+  return { ...author, avatarUrl: author.avatarUrl ?? "/brand/avatar.svg" };
 }
 
 function toSummary(data: Dataset, a: RawArticle, t: Translated<ArticleTranslation>): ArticleSummary {
@@ -117,7 +117,7 @@ function alternatesFor(doc: RawCollection | RawArticle, kind: "articles" | "coll
 
 export async function getSiteSettings(locale: Locale): Promise<SiteSettings> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const { settings } = await getDataset();
   const t = Object.fromEntries(Object.entries(settings[locale] ?? {}).filter(([, v]) => v));
@@ -132,7 +132,7 @@ export async function getSiteSettings(locale: Locale): Promise<SiteSettings> {
 
 export async function getCollections(locale: Locale): Promise<CollectionSummary[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const data = await getDataset();
   return [...data.collections]
@@ -143,7 +143,7 @@ export async function getCollections(locale: Locale): Promise<CollectionSummary[
 
 export async function getCollection(locale: Locale, slug: string): Promise<CollectionDetail | null> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const data = await getDataset();
   const raw = data.collections.find((c) => translation(c, locale)?.slug === slug);
@@ -158,7 +158,7 @@ export async function getCollection(locale: Locale, slug: string): Promise<Colle
 
 export async function getArticle(locale: Locale, slug: string): Promise<ArticleDetail | null> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const data = await getDataset();
   const a = data.articles.find((x) => translation(x, locale)?.slug === slug);
@@ -166,26 +166,28 @@ export async function getArticle(locale: Locale, slug: string): Promise<ArticleD
   if (!a || !t) return null;
   const collection = data.collections.find((c) => c._id === a.collectionId);
   const ct = collection && translation(collection, locale);
-  const related = collection
-    ? articlesIn(data, locale, collection._id)
-        .filter(({ raw }) => raw._id !== a._id)
-        .slice(0, 5)
-        .map(({ raw, t: rt }) => toSummary(data, raw, rt))
+  const siblings = collection
+    ? articlesIn(data, locale, collection._id).map(({ raw, t: rt }) => toSummary(data, raw, rt))
     : [];
+  const index = siblings.findIndex((s) => s._id === a._id);
+  const others = siblings.filter((s) => s._id !== a._id);
+  const start = Math.max(0, Math.min(index - 2, others.length - 5));
   return {
     ...toSummary(data, a, t),
     body: t.body ?? [],
     seoTitle: t.seoTitle ?? undefined,
     ogImageUrl: a.ogImageUrl ?? null,
     collection: ct ? { title: ct.title, slug: ct.slug } : null,
-    related,
+    related: others.slice(start, start + 5),
+    previous: index > 0 ? siblings[index - 1] : null,
+    next: index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : null,
     alternates: alternatesFor(a, "articles"),
   };
 }
 
 export async function getStaticSlugs(locale: Locale): Promise<{ collections: string[]; articles: string[] }> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const data = await getDataset();
   const slugs = (docs: (RawCollection | RawArticle)[]) =>
@@ -197,7 +199,7 @@ export type SitemapEntry = { alternates: Alternates; lastModified?: string };
 
 export async function getSitemapEntries(): Promise<SitemapEntry[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const data = await getDataset();
   const home: Alternates = Object.fromEntries(locales.map((l) => [l, localePath(l)]));
@@ -208,14 +210,20 @@ export async function getSitemapEntries(): Promise<SitemapEntry[]> {
   ].filter((e) => Object.keys(e.alternates).length > 0);
 }
 
-export async function resolveLegacyPath(kind: "articles" | "collections", legacyId: string): Promise<string | null> {
+export async function resolveLegacyPath(
+  kind: "articles" | "collections",
+  legacyId: string,
+  locale: Locale,
+): Promise<string | null> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const data = await getDataset();
   const list: (RawArticle | RawCollection)[] = kind === "articles" ? data.articles : data.collections;
   const match = list.find((x) => x.legacyId === legacyId);
-  return match ? (alternatesFor(match, kind).bg ?? null) : null;
+  if (!match) return null;
+  const alternates = alternatesFor(match, kind);
+  return alternates[locale] ?? alternates.bg ?? null;
 }
 
 function normalize(s: string, locale: Locale) {
@@ -232,7 +240,7 @@ function excerptAround(text: string, lower: string, terms: string[], radius = 90
 
 export async function searchArticles(locale: Locale, query: string): Promise<SearchResult[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CONTENT_TAG);
   const terms = normalize(query, locale).split(/\s+/).filter((t) => t.length > 1);
   if (terms.length === 0) return [];
