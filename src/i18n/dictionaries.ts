@@ -60,7 +60,6 @@ const bg = {
     home: "Начало",
   },
   loading: "Зареждане",
-  homeTitle: "Начало",
 };
 
 export type Dictionary = typeof bg;
@@ -124,7 +123,6 @@ const en: Dictionary = {
     home: "Home",
   },
   loading: "Loading",
-  homeTitle: "Home",
 };
 
 const dictionaries: Record<Locale, Dictionary> = { bg, en };

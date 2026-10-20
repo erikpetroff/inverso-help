@@ -30,7 +30,12 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/collection
   return pageMetadata({
     locale,
     title: collection.title,
-    description: collection.description || settings.description,
+    description: [
+      collection.description,
+      `${getDictionary(locale).articleCount(collection.articleCount)}: ${collection.articles.map((a) => splitNumber(a.title).text).join("; ")}`,
+    ]
+      .filter(Boolean)
+      .join(" – "),
     alternates: collection.alternates,
     siteName: settings.title,
   });

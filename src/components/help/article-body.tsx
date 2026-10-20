@@ -26,7 +26,7 @@ function Heading({ as: Tag, value, children }: { as: "h2" | "h3"; value: Portabl
   );
 }
 
-const components: PortableTextComponents = {
+const components = (sectionTag: "h2" | "h3"): PortableTextComponents => ({
   block: {
     h2: ({ children, value }) => (
       <Heading as="h2" value={value as PortableTextBlock}>
@@ -34,7 +34,7 @@ const components: PortableTextComponents = {
       </Heading>
     ),
     h3: ({ children, value }) => (
-      <Heading as="h3" value={value as PortableTextBlock}>
+      <Heading as={sectionTag} value={value as PortableTextBlock}>
         {children}
       </Heading>
     ),
@@ -69,12 +69,17 @@ const components: PortableTextComponents = {
       );
     },
   },
-};
+});
+
+const withH2 = components("h2");
+const withH3 = components("h3");
 
 export function ArticleBody({ value }: { value: Body }) {
+  // Most imported articles use h3 for their sections; keep the outline h1 -> h2 when there are no h2s.
+  const hasH2 = value.some((b) => b._type === "block" && (b as PortableTextBlock).style === "h2");
   return (
     <div className="article-body">
-      <PortableText value={value as PortableTextBlock[]} components={components} />
+      <PortableText value={value as PortableTextBlock[]} components={hasH2 ? withH3 : withH2} />
     </div>
   );
 }

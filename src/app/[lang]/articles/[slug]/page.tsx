@@ -14,8 +14,8 @@ import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
 import { getArticle, getSiteSettings, getStaticSlugs } from "@/lib/content";
-import { bodyToPlainText, splitNumber, tableOfContents } from "@/lib/portable-text";
-import { absoluteUrl, breadcrumbJsonLd, JsonLd, pageMetadata } from "@/lib/seo";
+import { bodyToPlainText, tableOfContents } from "@/lib/portable-text";
+import { absoluteUrl, breadcrumbJsonLd, JsonLd, pageMetadata, repeatsTitle } from "@/lib/seo";
 
 type Params = PageProps<"/[lang]/articles/[slug]">["params"];
 
@@ -30,7 +30,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/articles/[
   const [article, settings] = await Promise.all([getArticle(locale, slug), getSiteSettings(locale)]);
   if (!article) return { title: getDictionary(locale).notFound.metaTitle, robots: { index: false } };
   const description =
-    article.description || bodyToPlainText(article.body).replace(/\s+/g, " ").slice(0, 160) || settings.description;
+    (article.description && !repeatsTitle(article.title, article.description) ? article.description : null) ||
+    bodyToPlainText(article.body) ||
+    settings.description;
   return pageMetadata({
     locale,
     title: article.seoTitle || article.title,
@@ -79,6 +81,7 @@ async function ArticleContent({ params, locale }: { params: Params; locale: Loca
             url: absoluteUrl(path),
             mainEntityOfPage: absoluteUrl(path),
             image: absoluteUrl(`${path}/opengraph-image`),
+            datePublished: article.updatedAt,
             dateModified: article.updatedAt,
             author: { "@type": "Organization", name: article.author?.name ?? "Inverso" },
             publisher: { "@type": "Organization", name: "Inverso", logo: absoluteUrl("/brand/avatar.png") },
@@ -179,9 +182,7 @@ async function ArticleContent({ params, locale }: { params: Params; locale: Loca
 
 /** The design shows the description as a lead, unless it only repeats the title. */
 function leadFor(title: string, description?: string) {
-  if (!description) return null;
-  const norm = (s: string) => splitNumber(s).text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
-  return norm(description) === norm(title) ? null : description;
+  return description && !repeatsTitle(title, description) ? description : null;
 }
 
 function FallbackShell() {

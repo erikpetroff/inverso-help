@@ -12,10 +12,9 @@ const homeAlternates: Alternates = Object.fromEntries(locales.map((l) => [l, loc
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const settings = await getSiteSettings(locale);
-  const t = getDictionary(locale);
   return pageMetadata({
     locale,
-    title: `${t.homeTitle} | ${settings.title}`,
+    title: `${settings.title} – ${settings.headline}`,
     absoluteTitle: true,
     description: settings.description,
     alternates: homeAlternates,
