@@ -8,18 +8,25 @@ export async function SiteFooter() {
   const settings = await getSiteSettings(locale);
 
   return (
-    <footer className="mt-auto border-t">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 px-5 py-12 text-center sm:px-8">
-        <Link href={localePath(locale)} className="grayscale transition hover:grayscale-0" aria-label={settings.title}>
+    <footer className="mt-auto border-t bg-card py-8">
+      <div className="mx-auto flex max-w-[1088px] flex-wrap items-center justify-between gap-4 px-4 sm:px-6">
+        <Link href={localePath(locale)} className="flex">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/avatar.png" alt="" width={40} height={40} className="size-10 rounded-full" />
+          <img src="/brand/inverso-logo.svg" alt={settings.title} width={94} height={22} className="h-[22px] w-auto" />
         </Link>
-        <p className="text-sm font-medium text-[#909aa5]">{settings.footerText || settings.title}</p>
-        {settings.mainSiteUrl && (
-          <a href={settings.mainSiteUrl} className="text-sm text-[#909aa5] underline-offset-4 hover:text-foreground hover:underline">
-            {settings.mainSiteUrl.replace(/^https?:\/\//, "")}
-          </a>
-        )}
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <Link href={localePath(locale)} className="hover:text-foreground hover:underline">
+            {settings.title}
+          </Link>
+          {settings.footerText &&
+            (settings.mainSiteUrl ? (
+              <a href={settings.mainSiteUrl} className="hover:text-foreground hover:underline">
+                {settings.footerText}
+              </a>
+            ) : (
+              <span>{settings.footerText}</span>
+            ))}
+        </div>
       </div>
     </footer>
   );

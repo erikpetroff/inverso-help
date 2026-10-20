@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Loader2, Search, X } from "lucide-react";
+import { CaretRight, CircleNotch, FileText, MagnifyingGlass, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -24,7 +24,8 @@ type State =
   | { status: "error" };
 
 export function SearchBox({ locale, placeholder, defaultValue = "", size = "lg", className }: Props) {
-  const t = getDictionary(locale).search;
+  const dictionary = getDictionary(locale);
+  const t = dictionary.search;
   const router = useRouter();
   const listId = useId();
   const [value, setValue] = useState(defaultValue);
@@ -73,7 +74,7 @@ export function SearchBox({ locale, placeholder, defaultValue = "", size = "lg",
   }
 
   return (
-    <div ref={wrapperRef} className={cn("relative w-full", className)}>
+    <div ref={wrapperRef} className={cn("relative w-full max-w-[720px] text-foreground", className)}>
       <form
         role="search"
         onSubmit={(e) => {
@@ -83,21 +84,20 @@ export function SearchBox({ locale, placeholder, defaultValue = "", size = "lg",
             router.push(localePath(locale, `/articles/${results[active].slug}`));
           } else submit();
         }}
+        className={cn(
+          "flex items-center gap-3 rounded-xl bg-card px-4 shadow-card focus-within:ring-3 focus-within:ring-brand-mint/60",
+          size === "lg" ? "h-14" : "h-12",
+        )}
       >
         <label className="sr-only" htmlFor={`${listId}-input`}>
           {t.label}
         </label>
-        <Search
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground",
-            size === "lg" ? "left-5 size-5" : "left-4 size-4",
-          )}
-        />
+        <MagnifyingGlass aria-hidden className="size-5 shrink-0 text-faint" />
         <input
           id={`${listId}-input`}
           type="search"
           autoComplete="off"
+          enterKeyHint="search"
           value={value}
           placeholder={placeholder || t.placeholder}
           role="combobox"
@@ -121,10 +121,7 @@ export function SearchBox({ locale, placeholder, defaultValue = "", size = "lg",
               setOpen(false);
             }
           }}
-          className={cn(
-            "w-full rounded-[20px] border border-transparent bg-white text-foreground shadow-sm outline-none transition placeholder:text-muted-foreground focus-visible:ring-4 focus-visible:ring-brand-mint/50 [&::-webkit-search-cancel-button]:hidden",
-            size === "lg" ? "h-14 pr-12 pl-13 text-base" : "h-11 pr-10 pl-11 text-sm",
-          )}
+          className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-faint [&::-webkit-search-cancel-button]:hidden"
         />
         {value && (
           <button
@@ -134,7 +131,7 @@ export function SearchBox({ locale, placeholder, defaultValue = "", size = "lg",
               setValue("");
               setState({ status: "idle" });
             }}
-            className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="flex rounded-md p-1 text-faint hover:bg-accent hover:text-foreground"
           >
             <X className="size-4" />
           </button>
@@ -145,51 +142,56 @@ export function SearchBox({ locale, placeholder, defaultValue = "", size = "lg",
         <div
           id={listId}
           role="listbox"
-          className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-xl"
+          className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-card"
         >
           {state.status === "loading" && (
-            <div className="flex items-center gap-2 px-4 py-4 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" /> {t.searching}
+            <div className="flex items-center gap-2 px-6 py-4 text-sm text-muted-foreground">
+              <CircleNotch className="size-4 animate-spin" /> {t.searching}
             </div>
           )}
-          {state.status === "error" && (
-            <p className="px-4 py-4 text-sm text-destructive">{t.error}</p>
-          )}
+          {state.status === "error" && <p className="px-6 py-4 text-sm text-destructive">{t.error}</p>}
           {state.status === "done" && results.length === 0 && (
-            <p className="px-4 py-4 text-sm text-muted-foreground">
+            <p className="px-6 py-4 text-sm text-muted-foreground">
               {t.noResultsFor} <span className="font-medium text-foreground">{state.query}</span>
             </p>
           )}
           {state.status === "done" && results.length > 0 && (
-            <ul className="max-h-[60vh] overflow-y-auto py-1">
-              {results.map((r, i) => (
-                <li key={r._id} role="option" aria-selected={i === active}>
-                  <Link
-                    href={localePath(locale, `/articles/${r.slug}`)}
-                    onClick={() => setOpen(false)}
-                    onMouseEnter={() => setActive(i)}
-                    className={cn("flex gap-3 px-4 py-3 text-left", i === active && "bg-muted")}
-                  >
-                    <FileText className="mt-0.5 size-4 shrink-0 text-primary" />
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">{r.title}</span>
-                      {r.collection && (
-                        <span className="block truncate text-xs text-muted-foreground">{r.collection.title}</span>
+            <>
+              <div aria-hidden className="border-b px-6 py-4 text-xs leading-4 font-semibold text-muted-foreground">
+                {dictionary.articles} · {results.length}
+              </div>
+              <ul role="none" className="max-h-[60vh] overflow-y-auto">
+                {results.map((r, i) => (
+                  <li key={r._id} role="option" aria-selected={i === active}>
+                    <Link
+                      href={localePath(locale, `/articles/${r.slug}`)}
+                      onClick={() => setOpen(false)}
+                      onMouseEnter={() => setActive(i)}
+                      className={cn(
+                        "flex items-center gap-4 border-b border-black/6 px-6 py-3.5",
+                        i === active && "bg-black/3",
                       )}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <button
-                  type="button"
-                  onClick={submit}
-                  className="w-full border-t px-4 py-3 text-left text-sm font-medium text-primary hover:bg-muted"
-                >
-                  {t.seeAll(query)}
-                </button>
-              </li>
-            </ul>
+                    >
+                      <FileText className="size-5 shrink-0 text-faint" />
+                      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <span className="truncate text-sm leading-5 font-medium">{r.title}</span>
+                        {r.collection && (
+                          <span className="truncate text-xs leading-4 text-muted-foreground">{r.collection.title}</span>
+                        )}
+                      </span>
+                      <CaretRight className="size-4 shrink-0 text-faint" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={submit}
+                className="w-full px-6 py-3.5 text-left text-sm font-semibold hover:bg-black/3"
+              >
+                {t.seeAll(query)}
+              </button>
+            </>
           )}
         </div>
       )}

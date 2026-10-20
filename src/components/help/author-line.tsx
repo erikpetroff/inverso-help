@@ -1,50 +1,44 @@
 import { localeMeta, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Author } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
-type Props = {
-  locale: Locale;
-  authors: Author[];
-  prefix?: "by" | "writtenBy";
-  children?: React.ReactNode;
-  className?: string;
-};
-
-export function AuthorLine({ locale, authors, prefix = "by", children, className }: Props) {
+/** "От Inverso", "От Mira и още 1" */
+export function authorsLabel(locale: Locale, authors: Author[]) {
   const t = getDictionary(locale);
   const [first, ...rest] = authors;
+  if (!first) return null;
+  return `${t.by} ${first.name}${rest.length > 0 ? t.andMore(rest.length) : ""}`;
+}
+
+export function ArticleAuthor({ locale, author, updatedAt }: { locale: Locale; author: Author; updatedAt: string }) {
+  const t = getDictionary(locale);
+  const date = formatDate(locale, updatedAt);
   return (
-    <div className={cn("flex items-center gap-2.5 text-sm text-muted-foreground", className)}>
-      <span className="flex shrink-0 -space-x-2">
-        {authors.slice(0, 3).map((a) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={a.name}
-            src={a.avatarUrl || "/brand/avatar.png"}
-            alt=""
-            width={28}
-            height={28}
-            className="size-7 rounded-full border-2 border-background bg-muted object-cover"
-          />
-        ))}
-      </span>
-      <span className="min-w-0">
-        {first && (
-          <>
-            {t[prefix]} <span className="font-medium text-foreground">{first.name}</span>
-            {rest.length > 0 && t.andMore(rest.length)}
-          </>
+    <div className="flex items-center gap-3 pt-2">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={author.avatarUrl || "/brand/avatar.svg"}
+        alt=""
+        width={32}
+        height={32}
+        className="size-8 shrink-0 rounded-full bg-header object-cover"
+      />
+      <div className="flex flex-col">
+        <span className="text-sm leading-5">
+          {t.writtenBy} <strong className="font-semibold">{author.name}</strong>
+        </span>
+        {date && (
+          <time dateTime={updatedAt} className="text-xs leading-4 text-muted-foreground">
+            {date}
+          </time>
         )}
-        {children}
-      </span>
+      </div>
     </div>
   );
 }
 
-export function formatUpdated(locale: Locale, iso: string) {
+function formatDate(locale: Locale, iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
-  const date = new Intl.DateTimeFormat(localeMeta[locale].intl, { day: "numeric", month: "long", year: "numeric" }).format(d);
-  return getDictionary(locale).updatedOn(date);
+  return new Intl.DateTimeFormat(localeMeta[locale].intl, { day: "numeric", month: "long", year: "numeric" }).format(d);
 }

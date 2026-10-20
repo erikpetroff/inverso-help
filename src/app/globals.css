@@ -13,6 +13,9 @@
   --color-brand: var(--brand);
   --color-brand-mint: var(--brand-mint);
   --color-header: var(--header);
+  --color-faint: var(--faint);
+  --shadow-card: 0 4px 12px rgb(0 0 0 / 0.08);
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -52,33 +55,35 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.511 0.262 276.966);
-  --primary-foreground: oklch(0.985 0 0);
-  --brand: oklch(0.511 0.262 276.966);
-  --brand-mint: #9fe5cf;
-  --header: #000000;
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Inverso design system: monochrome black/white with a single mint accent. */
+  --background: #f7f9fb;
+  --foreground: rgb(28 28 28);
+  --card: #ffffff;
+  --card-foreground: rgb(28 28 28);
+  --popover: #ffffff;
+  --popover-foreground: rgb(28 28 28);
+  --primary: rgb(28 28 28);
+  --primary-foreground: #ffffff;
+  --brand: rgb(28 28 28);
+  --brand-mint: rgb(170 225 201);
+  --header: rgb(28 28 28);
+  --secondary: #f6f6f6;
+  --secondary-foreground: rgb(28 28 28);
+  --muted: #f6f6f6;
+  --muted-foreground: rgb(28 28 28 / 0.6);
+  --faint: rgb(28 28 28 / 0.4);
+  --accent: rgb(0 0 0 / 0.05);
+  --accent-foreground: rgb(28 28 28);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.585 0.233 277.117);
+  --border: rgb(0 0 0 / 0.1);
+  --input: rgb(0 0 0 / 0.1);
+  --ring: rgb(28 28 28 / 0.3);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -138,40 +143,48 @@
 
 @layer components {
   .article-body {
-    @apply text-[15px] leading-7 text-foreground/90 sm:text-base;
+    @apply text-base leading-7 text-foreground sm:text-lg sm:leading-[30px];
   }
   .article-body > * + * {
-    @apply mt-4;
+    @apply mt-3;
   }
-  .article-body h2 {
-    @apply mt-10 scroll-mt-6 text-2xl font-semibold tracking-tight text-foreground;
-  }
+  .article-body h2,
   .article-body h3 {
-    @apply mt-8 scroll-mt-6 text-xl font-semibold tracking-tight text-foreground;
+    @apply mt-8 flex scroll-mt-6 items-baseline gap-3 border-t pt-8 text-xl leading-[30px] font-semibold tracking-[-0.01em] sm:text-[22px];
+  }
+  .article-body > :is(h2, h3):first-child,
+  .article-body hr + :is(h2, h3) {
+    @apply border-t-0 pt-0;
   }
   .article-body h4 {
-    @apply mt-6 text-base font-semibold text-foreground;
+    @apply mt-6 text-base font-semibold sm:text-lg;
   }
   .article-body ul {
-    @apply list-disc space-y-1.5 pl-6 marker:text-muted-foreground;
+    @apply list-disc space-y-3 pl-5;
   }
   .article-body ol {
-    @apply list-decimal space-y-1.5 pl-6 marker:text-muted-foreground;
+    @apply list-decimal space-y-3 pl-5 marker:font-semibold;
   }
   .article-body li > ul,
   .article-body li > ol {
-    @apply mt-1.5;
+    @apply mt-3;
+  }
+  .article-body li {
+    @apply text-pretty;
   }
   .article-body a {
-    @apply font-medium text-primary underline underline-offset-4 hover:text-primary/80;
+    @apply font-medium underline decoration-brand-mint decoration-2 underline-offset-4 hover:decoration-foreground;
   }
   .article-body code {
     @apply rounded bg-muted px-1.5 py-0.5 font-mono text-[0.85em];
   }
   .article-body blockquote {
-    @apply border-l-4 border-primary/30 pl-4 text-muted-foreground italic;
+    @apply rounded-xl border bg-background px-5 py-4 text-muted-foreground;
   }
   .article-body strong {
-    @apply font-semibold text-foreground;
+    @apply font-semibold;
+  }
+  .article-body hr {
+    @apply my-8 border-border;
   }
 }

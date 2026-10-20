@@ -1,14 +1,15 @@
 "use client";
 
+import { Smiley, SmileyMeh, SmileySad } from "@phosphor-icons/react";
 import { useSyncExternalStore } from "react";
 import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { cn } from "@/lib/utils";
 
 const REACTIONS = [
-  { id: "disappointed", emoji: "😞" },
-  { id: "neutral", emoji: "😐" },
-  { id: "smiley", emoji: "😃" },
+  { id: "disappointed", icon: SmileySad },
+  { id: "neutral", icon: SmileyMeh },
+  { id: "smiley", icon: Smiley },
 ] as const;
 
 const EVENT = "help-reaction-change";
@@ -37,23 +38,25 @@ export function Reactions({ articleId, locale }: { articleId: string; locale: Lo
   }
 
   return (
-    <section className="rounded-2xl bg-muted/60 px-6 py-6 text-center">
-      <p className="font-medium">{selected ? t.thanks : t.question}</p>
-      <div className="mt-3 flex justify-center gap-3">
-        {REACTIONS.map((r) => (
+    <section className="flex flex-col items-center gap-4 rounded-2xl bg-background p-6">
+      <p className="text-sm leading-5 font-semibold" aria-live="polite">
+        {selected ? t.thanks : t.question}
+      </p>
+      <div className="flex gap-2">
+        {REACTIONS.map(({ id, icon: Icon }) => (
           <button
-            key={r.id}
+            key={id}
             type="button"
-            title={t[r.id]}
-            aria-label={t[r.id]}
-            aria-pressed={selected === r.id}
-            onClick={() => choose(r.id)}
+            title={t[id]}
+            aria-label={t[id]}
+            aria-pressed={selected === id}
+            onClick={() => choose(id)}
             className={cn(
-              "grid size-12 place-items-center rounded-full text-2xl transition hover:scale-115",
-              selected === r.id ? "scale-115 bg-background shadow" : selected ? "opacity-40 grayscale" : "",
+              "grid size-12 place-items-center rounded-full border transition-colors",
+              selected === id ? "border-brand-mint bg-brand-mint" : "bg-card hover:bg-accent",
             )}
           >
-            {r.emoji}
+            <Icon className="size-6" />
           </button>
         ))}
       </div>

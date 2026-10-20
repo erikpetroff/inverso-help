@@ -11,8 +11,8 @@ export default function SiteError({ reset }: { error: Error & { digest?: string 
   const locale = isLocale(lang) ? lang : defaultLocale;
   const t = getDictionary(locale).error;
   return (
-    <main id="main" className="mx-auto w-full max-w-5xl px-5 py-24 text-center sm:px-8">
-      <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
+    <main id="main" className="mx-auto w-full max-w-[800px] flex-1 px-4 py-24 text-center sm:px-6">
+      <h1 className="text-2xl font-semibold tracking-[-0.02em]">{t.title}</h1>
       <p className="mx-auto mt-3 max-w-md text-muted-foreground">{t.body}</p>
       <div className="mt-8 flex justify-center gap-3">
         <Button size="lg" onClick={reset}>

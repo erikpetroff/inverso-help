@@ -1,13 +1,6 @@
+import { CaretRight } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 import { Fragment } from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -17,23 +10,29 @@ export function HelpBreadcrumb({ locale, items }: { locale: Locale; items: Crumb
   const t = getDictionary(locale);
   const all: Crumb[] = [{ label: t.allCollections, href: localePath(locale) }, ...items];
   return (
-    <Breadcrumb aria-label={t.breadcrumb}>
-      <BreadcrumbList>
+    <nav aria-label={t.breadcrumb}>
+      <ol className="flex flex-wrap items-center gap-2 text-sm leading-5 text-muted-foreground">
         {all.map((c, i) => (
           <Fragment key={`${c.label}-${i}`}>
-            {i > 0 && <BreadcrumbSeparator />}
-            <BreadcrumbItem className="min-w-0">
+            {i > 0 && (
+              <li aria-hidden className="flex">
+                <CaretRight className="size-3" />
+              </li>
+            )}
+            <li className="min-w-0">
               {c.href ? (
-                <BreadcrumbLink render={<Link href={c.href} />} className="truncate">
+                <Link href={c.href} className="hover:text-foreground hover:underline">
                   {c.label}
-                </BreadcrumbLink>
+                </Link>
               ) : (
-                <BreadcrumbPage className="line-clamp-1">{c.label}</BreadcrumbPage>
+                <span aria-current="page" className="line-clamp-1 text-foreground">
+                  {c.label}
+                </span>
               )}
-            </BreadcrumbItem>
+            </li>
           </Fragment>
         ))}
-      </BreadcrumbList>
-    </Breadcrumb>
+      </ol>
+    </nav>
   );
 }

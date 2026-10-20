@@ -1,4 +1,3 @@
-import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { localePath, type Alternates } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -6,7 +5,6 @@ import { getLocale } from "@/i18n/server";
 import { getSiteSettings } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./language-switcher";
-import { MobileMenu } from "./mobile-menu";
 import { SearchBox } from "./search-box";
 
 type Props = {
@@ -20,66 +18,55 @@ export async function SiteHeader({ hero = false, searchDefault, alternates = {} 
   const locale = await getLocale();
   const t = getDictionary(locale);
   const settings = await getSiteSettings(locale);
-  const home = localePath(locale);
 
   return (
     <header className="bg-header text-white">
-      <div className={cn("mx-auto max-w-5xl px-5 sm:px-8", hero ? "pt-5 pb-12 sm:pt-6 sm:pb-20" : "py-4 sm:pt-5 sm:pb-8")}>
+      <div
+        className={cn(
+          "mx-auto flex max-w-[1088px] flex-col px-4 sm:px-6",
+          hero ? "gap-10 pt-6 pb-16 sm:gap-14" : "gap-5 py-5",
+        )}
+      >
         <div className="flex items-center justify-between gap-4">
           <Link
-            href={home}
-            className="flex min-w-0 items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-brand-mint"
+            href={localePath(locale)}
+            className="flex shrink-0 rounded-md focus-visible:ring-2 focus-visible:ring-brand-mint focus-visible:outline-none"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={settings.logoUrl || "/brand/logo.png"} alt="" width={36} height={36} className="size-9 shrink-0" />
-            <span className="truncate text-base font-semibold tracking-tight sm:text-lg">{settings.title}</span>
+            <img
+              src={settings.logoUrl || "/brand/inverso-logo-white.svg"}
+              alt={settings.title}
+              width={120}
+              height={28}
+              className="h-7 w-auto"
+            />
           </Link>
-
-          <div className="hidden items-center gap-3 sm:flex">
-            <LanguageSwitcher locale={locale} alternates={alternates} label={t.language} />
+          <div className="flex items-center gap-2">
             {settings.mainSiteUrl && (
               <a
                 href={settings.mainSiteUrl}
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-white/80 transition hover:bg-white/10 hover:text-white"
+                className="hidden rounded-lg px-3 py-2 text-sm text-white/80 transition-colors hover:bg-white/8 hover:text-white sm:block"
               >
-                {t.toMainSite} Inverso.bg
-                <ExternalLink className="size-3.5" />
+                {t.toMainSite}
               </a>
             )}
+            <LanguageSwitcher locale={locale} alternates={alternates} label={t.language} />
           </div>
-
-          <MobileMenu
-            title={settings.title}
-            menuLabel={t.menu}
-            homeHref={home}
-            homeLabel={t.allCollections}
-            mainSiteUrl={settings.mainSiteUrl}
-          >
-            <LanguageSwitcher locale={locale} alternates={alternates} label={t.language} variant="list" />
-          </MobileMenu>
         </div>
 
-        {hero ? (
-          <div className="mt-10 sm:mt-16">
-            <h1 className="max-w-3xl text-[1.75rem] leading-tight font-bold tracking-tight text-balance sm:text-4xl">
+        <div className="flex flex-col gap-6">
+          {hero && (
+            <h1 className="max-w-[640px] text-[28px] leading-9 font-semibold tracking-[-0.02em] text-pretty sm:text-[32px] sm:leading-10">
               {settings.headline}
             </h1>
-            <SearchBox
-              className="mt-7 sm:mt-8"
-              locale={locale}
-              placeholder={settings.searchPlaceholder}
-              defaultValue={searchDefault}
-            />
-          </div>
-        ) : (
+          )}
           <SearchBox
-            className="mt-4 sm:mt-5"
-            size="md"
             locale={locale}
+            size={hero ? "lg" : "md"}
             placeholder={settings.searchPlaceholder}
             defaultValue={searchDefault}
           />
-        )}
+        </div>
       </div>
     </header>
   );
