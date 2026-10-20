@@ -8,7 +8,9 @@
     "start": "next start -p 4317",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "seed": "node --env-file-if-exists=.env.local scripts/seed-sanity.mjs"
+    "seed": "node --env-file-if-exists=.env.local scripts/seed-sanity.mjs",
+    "studio": "sanity dev",
+    "studio:deploy": "sanity deploy"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
