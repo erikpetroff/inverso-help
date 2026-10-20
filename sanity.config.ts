@@ -1,5 +1,3 @@
-"use client";
-
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
@@ -12,8 +10,7 @@ const SINGLETONS = new Set(["siteSettings"]);
 export default defineConfig({
   name: "inverso-help",
   title: "Inverso Help Center",
-  basePath: "/studio",
-  projectId: projectId || "missing-project-id",
+  projectId,
   dataset,
   schema: {
     types: schemaTypes,

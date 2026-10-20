@@ -1,36 +1,30 @@
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { localePath, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { CollectionIcon } from "@/lib/icons";
 import type { CollectionSummary } from "@/lib/types";
-import { AuthorLine } from "./author-line";
+import { authorsLabel } from "./author-line";
 
 export function CollectionCard({ locale, collection }: { locale: Locale; collection: CollectionSummary }) {
   const t = getDictionary(locale);
   return (
     <Link
       href={localePath(locale, `/collections/${collection.slug}`)}
-      className="group flex items-center gap-4 rounded-lg border border-foreground/15 bg-card p-4 shadow-xs transition hover:border-primary/40 hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:gap-6 sm:p-6"
+      className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 transition-[box-shadow,border-color] duration-150 ease-standard hover:border-black/20 hover:shadow-card focus-visible:ring-3 focus-visible:ring-brand-mint focus-visible:outline-none"
     >
-      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/8 text-primary sm:size-14">
-        <CollectionIcon name={collection.icon} className="size-5 sm:size-7" strokeWidth={1.75} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-base font-semibold text-foreground group-hover:text-primary sm:text-lg">
-          {collection.title}
-        </span>
+      <div className="grid size-10 place-items-center rounded-[10px] bg-brand-mint">
+        <CollectionIcon name={collection.icon} className="size-5" />
+      </div>
+      <div className="flex flex-1 flex-col gap-1">
+        <h2 className="text-base leading-6 font-semibold">{collection.title}</h2>
         {collection.description && (
-          <span className="mt-1 block text-sm text-muted-foreground">{collection.description}</span>
+          <p className="text-sm leading-5 text-pretty text-muted-foreground">{collection.description}</p>
         )}
-        {collection.articleCount > 0 && (
-          <AuthorLine locale={locale} authors={collection.authors} className="mt-3 text-xs sm:text-sm">
-            <span className="mx-1.5 text-muted-foreground/60">·</span>
-            {t.articleCount(collection.articleCount)}
-          </AuthorLine>
-        )}
-      </span>
-      <ChevronRight className="size-5 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+      </div>
+      <div className="flex items-center justify-between gap-2 text-xs leading-4 text-muted-foreground">
+        <span>{authorsLabel(locale, collection.authors)}</span>
+        <span className="rounded-full bg-muted px-2 py-0.5 text-foreground">{t.articleCount(collection.articleCount)}</span>
+      </div>
     </Link>
   );
 }

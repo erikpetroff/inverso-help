@@ -12,10 +12,9 @@ const homeAlternates: Alternates = Object.fromEntries(locales.map((l) => [l, loc
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const settings = await getSiteSettings(locale);
-  const t = getDictionary(locale);
   return pageMetadata({
     locale,
-    title: `${t.homeTitle} | ${settings.title}`,
+    title: `${settings.title} – ${settings.headline}`,
     absoluteTitle: true,
     description: settings.description,
     alternates: homeAlternates,
@@ -47,23 +46,22 @@ export default async function HomePage() {
         }}
       />
       <SiteHeader hero alternates={homeAlternates} />
-      <main id="main" className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8 sm:py-14">
+      <main id="main" className="mx-auto -mt-8 w-full max-w-[1088px] flex-1 px-4 pb-20 sm:px-6">
         {collections.length === 0 ? (
-          <div className="rounded-2xl border border-dashed px-6 py-16 text-center">
-            <h2 className="text-lg font-semibold">{t.emptyHelpCenterTitle}</h2>
+          <div className="rounded-2xl border bg-card px-6 py-12 text-center">
+            <h2 className="text-base font-semibold">{t.emptyHelpCenterTitle}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{t.emptyHelpCenter}</p>
           </div>
         ) : (
-          <>
-            <h2 className="sr-only">{t.collections}</h2>
-            <ul className="grid gap-3 sm:gap-4">
+          <section aria-label={t.collections}>
+            <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-4">
               {collections.map((c) => (
                 <li key={c._id}>
                   <CollectionCard locale={locale} collection={c} />
                 </li>
               ))}
             </ul>
-          </>
+          </section>
         )}
       </main>
     </>

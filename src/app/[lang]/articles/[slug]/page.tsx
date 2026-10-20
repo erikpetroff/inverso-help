@@ -1,10 +1,10 @@
-import { ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArticleBody } from "@/components/help/article-body";
-import { AuthorLine, formatUpdated } from "@/components/help/author-line";
+import { ArticleAuthor } from "@/components/help/author-line";
 import { HelpBreadcrumb } from "@/components/help/help-breadcrumb";
 import { Reactions } from "@/components/help/reactions";
 import { SiteHeader } from "@/components/help/site-header";
@@ -15,7 +15,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { getLocale } from "@/i18n/server";
 import { getArticle, getSiteSettings, getStaticSlugs } from "@/lib/content";
 import { bodyToPlainText, tableOfContents } from "@/lib/portable-text";
-import { absoluteUrl, breadcrumbJsonLd, JsonLd, pageMetadata } from "@/lib/seo";
+import { absoluteUrl, breadcrumbJsonLd, JsonLd, pageMetadata, repeatsTitle } from "@/lib/seo";
 
 type Params = PageProps<"/[lang]/articles/[slug]">["params"];
 
@@ -30,7 +30,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/articles/[
   const [article, settings] = await Promise.all([getArticle(locale, slug), getSiteSettings(locale)]);
   if (!article) return { title: getDictionary(locale).notFound.metaTitle, robots: { index: false } };
   const description =
-    article.description || bodyToPlainText(article.body).replace(/\s+/g, " ").slice(0, 160) || settings.description;
+    (article.description && !repeatsTitle(article.title, article.description) ? article.description : null) ||
+    bodyToPlainText(article.body) ||
+    settings.description;
   return pageMetadata({
     locale,
     title: article.seoTitle || article.title,
@@ -57,7 +59,7 @@ async function ArticleContent({ params, locale }: { params: Params; locale: Loca
   if (!article) notFound();
   const t = getDictionary(locale);
   const toc = tableOfContents(article.body);
-  const updated = formatUpdated(locale, article.updatedAt);
+  const lead = leadFor(article.title, article.description);
   const path = localePath(locale, `/articles/${article.slug}`);
   const collectionPath = article.collection && localePath(locale, `/collections/${article.collection.slug}`);
 
@@ -79,6 +81,7 @@ async function ArticleContent({ params, locale }: { params: Params; locale: Loca
             url: absoluteUrl(path),
             mainEntityOfPage: absoluteUrl(path),
             image: absoluteUrl(`${path}/opengraph-image`),
+            datePublished: article.updatedAt,
             dateModified: article.updatedAt,
             author: { "@type": "Organization", name: article.author?.name ?? "Inverso" },
             publisher: { "@type": "Organization", name: "Inverso", logo: absoluteUrl("/brand/avatar.png") },
@@ -86,102 +89,118 @@ async function ArticleContent({ params, locale }: { params: Params; locale: Loca
         ]}
       />
       <SiteHeader alternates={article.alternates} />
-      <main id="main" className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-8 sm:py-12">
-        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-14">
-          <article className="min-w-0 max-w-3xl">
-            <HelpBreadcrumb
-              locale={locale}
-              items={[
-                ...(article.collection && collectionPath ? [{ label: article.collection.title, href: collectionPath }] : []),
-                { label: article.title },
-              ]}
-            />
+      <main id="main" className="w-full flex-1 px-4 pt-8 pb-20 sm:px-6">
+        <div className="mx-auto flex max-w-[1040px] flex-col gap-6">
+          <HelpBreadcrumb
+            locale={locale}
+            items={[
+              ...(article.collection && collectionPath ? [{ label: article.collection.title, href: collectionPath }] : []),
+              { label: article.title },
+            ]}
+          />
 
-            <header className="mt-6 border-b pb-6 sm:mt-8">
-              <h1 className="text-2xl font-bold tracking-tight text-balance sm:text-3xl">{article.title}</h1>
-              {article.description && (
-                <p className="mt-3 text-base text-muted-foreground sm:text-lg">{article.description}</p>
-              )}
-              {article.author && (
-                <AuthorLine locale={locale} authors={[article.author]} prefix="writtenBy" className="mt-5">
-                  {updated && <span className="block text-xs text-muted-foreground">{updated}</span>}
-                </AuthorLine>
-              )}
-            </header>
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
+            <article className="flex min-w-0 flex-col gap-8 rounded-2xl border bg-card p-5 sm:p-10">
+              <header className="flex flex-col gap-3">
+                <h1 className="text-[28px] leading-9 font-semibold tracking-[-0.02em] text-pretty sm:text-4xl sm:leading-[44px]">
+                  {article.title}
+                </h1>
+                {lead && <p className="text-base leading-7 text-pretty text-muted-foreground sm:text-lg">{lead}</p>}
+                {article.author && <ArticleAuthor locale={locale} author={article.author} updatedAt={article.updatedAt} />}
+              </header>
 
-            {toc.length > 1 && (
-              <details className="mt-6 rounded-xl border px-4 py-3 lg:hidden">
-                <summary className="cursor-pointer text-sm font-semibold">{t.tableOfContents}</summary>
-                <ul className="mt-2 space-y-1 text-sm">
-                  {toc.map((e) => (
-                    <li key={e.id} className={e.level === 3 ? "pl-4" : ""}>
-                      <a href={`#${e.id}`} className="block py-1.5 text-muted-foreground hover:text-foreground">
-                        {e.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
-
-            <div className="mt-8">
-              {article.body.length > 0 ? (
-                <ArticleBody value={article.body} />
-              ) : (
-                <p className="text-muted-foreground">{t.noBody}</p>
-              )}
-            </div>
-
-            <div className="mt-12 sm:mt-14">
-              <Reactions articleId={article._id} locale={locale} />
-            </div>
-
-            {article.related.length > 0 && (
-              <section className="mt-12">
-                <h2 className="text-lg font-semibold">{t.relatedArticles}</h2>
-                <ul className="mt-4 divide-y overflow-hidden rounded-lg border border-foreground/15">
-                  {article.related.map((r) => (
-                    <li key={r._id}>
-                      <Link
-                        href={localePath(locale, `/articles/${r.slug}`)}
-                        className="group flex items-center justify-between gap-4 px-4 py-3.5 text-sm transition hover:bg-primary/4 sm:px-5"
-                      >
-                        <span className="font-medium group-hover:text-primary">{r.title}</span>
-                        <ChevronRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </article>
-
-          {toc.length > 1 && (
-            <aside className="hidden lg:block">
-              <div className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto pt-16">
-                <TableOfContents entries={toc} title={t.tableOfContents} />
+              <div className="border-t pt-8">
+                {article.body.length > 0 ? (
+                  <ArticleBody value={article.body} />
+                ) : (
+                  <p className="text-muted-foreground">{t.noBody}</p>
+                )}
               </div>
+
+              <Reactions articleId={article._id} locale={locale} />
+
+              {(article.previous || article.next) && (
+                <nav aria-label={t.articles} className="flex flex-wrap gap-3">
+                  {article.previous && (
+                    <Link
+                      href={localePath(locale, `/articles/${article.previous.slug}`)}
+                      rel="prev"
+                      className="flex min-w-0 flex-[1_1_220px] flex-col gap-1 rounded-xl border p-4 transition-colors hover:border-black/20"
+                    >
+                      <span className="flex items-center gap-1 text-xs leading-4 text-muted-foreground">
+                        <ArrowLeft aria-hidden className="size-3" />
+                        {t.previous}
+                      </span>
+                      <span className="text-sm leading-5 font-medium">{article.previous.title}</span>
+                    </Link>
+                  )}
+                  {article.next && (
+                    <Link
+                      href={localePath(locale, `/articles/${article.next.slug}`)}
+                      rel="next"
+                      className="ml-auto flex min-w-0 flex-[1_1_220px] flex-col items-end gap-1 rounded-xl border p-4 text-right transition-colors hover:border-black/20"
+                    >
+                      <span className="flex items-center gap-1 text-xs leading-4 text-muted-foreground">
+                        {t.next}
+                        <ArrowRight aria-hidden className="size-3" />
+                      </span>
+                      <span className="text-sm leading-5 font-medium">{article.next.title}</span>
+                    </Link>
+                  )}
+                </nav>
+              )}
+            </article>
+
+            <aside className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-6">
+              {toc.length > 0 && <TableOfContents entries={toc} title={t.tableOfContents} />}
+              {article.related.length > 0 && article.collection && (
+                <nav aria-label={t.moreIn(article.collection.title)} className="flex flex-col gap-1 rounded-2xl border bg-card p-4">
+                  <p className="px-2 pt-1 pb-2 text-xs leading-4 font-semibold text-muted-foreground">
+                    {t.moreIn(article.collection.title)}
+                  </p>
+                  <ul className="flex flex-col gap-1">
+                    {article.related.map((r) => (
+                      <li key={r._id}>
+                        <Link
+                          href={localePath(locale, `/articles/${r.slug}`)}
+                          className="block rounded-lg px-2 py-1.5 text-sm leading-5 text-pretty transition-colors hover:bg-accent"
+                        >
+                          {r.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
             </aside>
-          )}
+          </div>
         </div>
       </main>
     </>
   );
 }
 
+/** The design shows the description as a lead, unless it only repeats the title. */
+function leadFor(title: string, description?: string) {
+  return description && !repeatsTitle(title, description) ? description : null;
+}
+
 function FallbackShell() {
   return (
     <>
-      <div className="h-36 bg-header" />
-      <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-8 sm:py-12" aria-busy="true">
-        <div className="max-w-3xl">
+      <div className="h-[140px] bg-header" />
+      <main className="w-full flex-1 px-4 pt-8 pb-20 sm:px-6" aria-busy="true">
+        <div className="mx-auto flex max-w-[1040px] flex-col gap-6">
           <Skeleton className="h-4 w-64" />
-          <Skeleton className="mt-8 h-9 w-3/4" />
-          <Skeleton className="mt-4 h-5 w-1/2" />
-          <div className="mt-10 space-y-3">
-            {Array.from({ length: 8 }, (_, i) => (
-              <Skeleton key={i} className="h-4 w-full" />
-            ))}
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
+            <div className="space-y-4 rounded-2xl border bg-card p-10">
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-5 w-1/2" />
+              {Array.from({ length: 8 }, (_, i) => (
+                <Skeleton key={i} className="h-4 w-full" />
+              ))}
+            </div>
+            <Skeleton className="h-64 rounded-2xl" />
           </div>
         </div>
       </main>

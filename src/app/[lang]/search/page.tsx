@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { CaretRight, FileText, MagnifyingGlass } from "@phosphor-icons/react/ssr";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -45,11 +45,13 @@ export default async function SearchPage({ searchParams }: PageProps<"/[lang]/se
       <Suspense fallback={<SiteHeader alternates={searchAlternates} />}>
         <HeaderWithQuery searchParams={searchParams} />
       </Suspense>
-      <main id="main" className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-8 sm:py-12">
-        <HelpBreadcrumb locale={locale} items={[{ label: t.search.pageTitle }]} />
-        <Suspense fallback={<ResultsSkeleton label={t.loading} />}>
-          <Results searchParams={searchParams} locale={locale} />
-        </Suspense>
+      <main id="main" className="w-full flex-1 px-4 pt-8 pb-20 sm:px-6">
+        <div className="mx-auto flex max-w-[800px] flex-col gap-6">
+          <HelpBreadcrumb locale={locale} items={[{ label: t.search.pageTitle }]} />
+          <Suspense fallback={<ResultsSkeleton label={t.loading} />}>
+            <Results searchParams={searchParams} locale={locale} />
+          </Suspense>
+        </div>
       </main>
     </>
   );
@@ -64,19 +66,20 @@ async function Results({ searchParams, locale }: { searchParams: SearchParams; l
   const q = await readQuery(searchParams);
   const t = getDictionary(locale).search;
 
-  if (!q) return <p className="mt-10 text-muted-foreground">{t.emptyPrompt}</p>;
+  if (!q) return <p className="text-muted-foreground">{t.emptyPrompt}</p>;
 
   const results = await searchArticles(locale, q);
 
   if (results.length === 0) {
     return (
-      <div className="mt-8 rounded-2xl border border-dashed px-5 py-12 text-center sm:mt-10 sm:px-6 sm:py-14">
-        <p className="text-lg font-semibold">
-          {t.noResultsFor} <span className="break-words text-primary">{t.quote(q)}</span>
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
+      <div className="flex flex-col items-center gap-2 rounded-2xl border bg-card px-6 py-12 text-center">
+        <MagnifyingGlass aria-hidden className="size-8 text-faint" />
+        <h1 className="text-base font-semibold">
+          {t.noResultsFor} <span className="break-words">{t.quote(q)}</span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
           {t.tryAnother}{" "}
-          <Link href={localePath(locale)} className="font-medium text-primary underline underline-offset-4">
+          <Link href={localePath(locale)} className="font-medium text-foreground underline underline-offset-4">
             {t.browseAll}
           </Link>
           .
@@ -86,28 +89,29 @@ async function Results({ searchParams, locale }: { searchParams: SearchParams; l
   }
 
   return (
-    <section className="mt-6 sm:mt-8">
-      <h1 className="text-xl font-semibold sm:text-2xl">
-        {t.resultsFor} <span className="break-words text-primary">{t.quote(q)}</span>
-      </h1>
-      <p className="mt-1 text-sm text-muted-foreground">{t.resultCount(results.length)}</p>
-      <ul className="mt-6 space-y-3">
+    <section className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-2xl leading-8 font-semibold tracking-[-0.02em]">
+          {t.resultsFor} <span className="break-words">{t.quote(q)}</span>
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t.resultCount(results.length)}</p>
+      </div>
+      <ul className="overflow-hidden rounded-2xl border bg-card">
         {results.map((r) => (
-          <li key={r._id}>
+          <li key={r._id} className="border-b border-black/6 last:border-b-0">
             <Link
               href={localePath(locale, `/articles/${r.slug}`)}
-              className="group flex gap-3 rounded-lg border border-foreground/15 p-4 transition hover:border-primary/40 hover:shadow-md sm:gap-4 sm:p-5"
+              className="flex items-center gap-4 px-4 py-4 transition-colors hover:bg-black/3 sm:px-6"
             >
-              <FileText className="mt-0.5 size-5 shrink-0 text-primary" />
-              <span className="min-w-0">
-                <span className="block font-semibold group-hover:text-primary">{r.title}</span>
-                {r.collection && <span className="mt-0.5 block text-xs text-muted-foreground">{r.collection.title}</span>}
+              <FileText aria-hidden className="size-5 shrink-0 self-start text-faint" />
+              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="text-sm leading-5 font-medium">{r.title}</span>
+                {r.collection && <span className="text-xs leading-4 text-muted-foreground">{r.collection.title}</span>}
                 {(r.excerpt || r.description) && (
-                  <span className="mt-2 line-clamp-3 block text-sm text-muted-foreground sm:line-clamp-2">
-                    {r.excerpt || r.description}
-                  </span>
+                  <span className="mt-1 line-clamp-2 text-sm leading-5 text-muted-foreground">{r.excerpt || r.description}</span>
                 )}
               </span>
+              <CaretRight aria-hidden className="size-4 shrink-0 text-faint" />
             </Link>
           </li>
         ))}
@@ -118,11 +122,9 @@ async function Results({ searchParams, locale }: { searchParams: SearchParams; l
 
 function ResultsSkeleton({ label }: { label: string }) {
   return (
-    <div className="mt-8 space-y-3" aria-busy="true" aria-label={label}>
-      <Skeleton className="h-7 w-72 max-w-full" />
-      {Array.from({ length: 4 }, (_, i) => (
-        <Skeleton key={i} className="h-24 w-full" />
-      ))}
+    <div className="space-y-3" aria-busy="true" aria-label={label}>
+      <Skeleton className="h-8 w-72 max-w-full" />
+      <Skeleton className="h-80 w-full rounded-2xl" />
     </div>
   );
 }

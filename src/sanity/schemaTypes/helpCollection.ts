@@ -34,7 +34,7 @@ export const helpCollection = defineType({
       group: "settings",
       initialValue: "folder",
       options: {
-        list: Object.keys(COLLECTION_ICONS).map((value) => ({ value, title: value })),
+        list: Object.entries(COLLECTION_ICONS).map(([value, { title }]) => ({ value, title: `${title} (${value})` })),
       },
     }),
     defineField({

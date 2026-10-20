@@ -5,7 +5,7 @@ import type { TocEntry } from "@/lib/portable-text";
 import { cn } from "@/lib/utils";
 
 export function TableOfContents({ entries, title }: { entries: TocEntry[]; title: string }) {
-  const [activeId, setActiveId] = useState<string | null>(entries[0]?.id ?? null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const headings = entries
@@ -25,23 +25,23 @@ export function TableOfContents({ entries, title }: { entries: TocEntry[]; title
   }, [entries]);
 
   return (
-    <nav aria-label={title} className="text-sm">
-      <p className="mb-3 font-semibold text-foreground">{title}</p>
-      <ul className="space-y-0.5">
+    <nav aria-label={title} className="flex flex-col gap-1 rounded-2xl border bg-card p-4">
+      <p className="px-2 pt-1 pb-2 text-xs leading-4 font-semibold text-muted-foreground">{title}</p>
+      <ul className="flex flex-col gap-1">
         {entries.map((e) => (
           <li key={e.id}>
             <a
               href={`#${e.id}`}
               onClick={() => setActiveId(e.id)}
+              aria-current={activeId === e.id ? "location" : undefined}
               className={cn(
-                "block border-l-2 py-1.5 leading-snug transition-colors",
-                e.level === 3 ? "pl-6" : "pl-3",
-                activeId === e.id
-                  ? "border-foreground/60 text-foreground"
-                  : "border-muted text-muted-foreground hover:text-foreground",
+                "flex gap-2 rounded-lg px-2 py-1.5 text-sm leading-5 transition-colors hover:bg-accent",
+                e.level === 3 && !e.number && "pl-5",
+                activeId === e.id && "bg-accent font-medium",
               )}
             >
-              {e.text}
+              {e.number && <span className="shrink-0 text-faint tabular-nums">{e.number}</span>}
+              <span>{e.text}</span>
             </a>
           </li>
         ))}

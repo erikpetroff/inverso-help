@@ -55,6 +55,8 @@ export type ArticleDetail = ArticleSummary & {
   ogImageUrl?: string | null;
   collection: { title: string; slug: string } | null;
   related: ArticleSummary[];
+  previous: ArticleSummary | null;
+  next: ArticleSummary | null;
   alternates: Alternates;
 };
 

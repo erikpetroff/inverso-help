@@ -14,12 +14,12 @@ export default function GlobalNotFound() {
       <body className="grid min-h-full place-items-center bg-header px-6 text-center text-white">
         <main>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/logo.png" alt="" width={56} height={56} className="mx-auto size-14" />
-          <h1 className="mt-6 text-2xl font-bold">Хм. Тази страница не съществува.</h1>
+          <img src="/brand/inverso-logo-white.svg" alt="Inverso" width={137} height={32} className="mx-auto h-8 w-auto" />
+          <h1 className="mt-8 text-2xl font-semibold">Хм. Тази страница не съществува.</h1>
           <p className="mt-2 text-white/70">Hmm. This page doesn&apos;t exist.</p>
           <div className="mt-8 flex justify-center gap-3 text-sm font-medium">
-            <Link href="/bg" className="rounded-full bg-white px-4 py-2 text-black">Помощен център</Link>
-            <Link href="/en" className="rounded-full border border-white/30 px-4 py-2">Help Center</Link>
+            <Link href="/" className="rounded-lg bg-white px-4 py-2 text-black">Помощен център</Link>
+            <Link href="/en" className="rounded-lg border border-white/20 px-4 py-2">Help Center</Link>
           </div>
         </main>
       </body>

@@ -8,14 +8,14 @@
    "headline": "Съвети и отговори от екипа на Inverso.bg",
    "description": "Ръководства и отговори на често задавани въпроси за Inverso.bg – фактури, клиенти, плащания, проекти и настройки на профила.",
    "searchPlaceholder": "Търсене на статии...",
-   "footerText": "Inverso Help Center"
+   "footerText": "© 2026 Inverso.bg"
   },
   "en": {
    "title": "Inverso Help Center",
    "headline": "Tips and answers from the Inverso.bg team",
    "description": "Guides and answers to common questions about Inverso.bg – invoices, clients, payments, projects and account settings.",
    "searchPlaceholder": "Search for articles...",
-   "footerText": "Inverso Help Center"
+   "footerText": "© 2026 Inverso.bg"
   }
  },
  {
@@ -26,7 +26,7 @@
  {
   "_id": "collection-12276517",
   "_type": "helpCollection",
-  "icon": "folder",
+  "icon": "receipt",
   "order": 1,
   "legacyId": "12276517",
   "bg": {
@@ -72,7 +72,7 @@
  {
   "_id": "collection-12276616",
   "_type": "helpCollection",
-  "icon": "calculator",
+  "icon": "package",
   "order": 3,
   "legacyId": "12276616",
   "bg": {
@@ -95,7 +95,7 @@
  {
   "_id": "collection-18005834",
   "_type": "helpCollection",
-  "icon": "banknote",
+  "icon": "credit-card",
   "order": 4,
   "legacyId": "18005834",
   "bg": {
@@ -118,7 +118,7 @@
  {
   "_id": "collection-18006045",
   "_type": "helpCollection",
-  "icon": "arrow-left-right",
+  "icon": "arrows-left-right",
   "order": 5,
   "legacyId": "18006045",
   "bg": {
@@ -141,7 +141,7 @@
  {
   "_id": "collection-18005849",
   "_type": "helpCollection",
-  "icon": "credit-card",
+  "icon": "crown-simple",
   "order": 6,
   "legacyId": "18005849",
   "bg": {
@@ -164,7 +164,7 @@
  {
   "_id": "collection-18005888",
   "_type": "helpCollection",
-  "icon": "briefcase",
+  "icon": "folder-simple",
   "order": 7,
   "legacyId": "18005888",
   "bg": {
@@ -187,7 +187,7 @@
  {
   "_id": "collection-18005900",
   "_type": "helpCollection",
-  "icon": "users",
+  "icon": "users-three",
   "order": 8,
   "legacyId": "18005900",
   "bg": {
@@ -210,7 +210,7 @@
  {
   "_id": "collection-18006080",
   "_type": "helpCollection",
-  "icon": "globe",
+  "icon": "buildings",
   "order": 9,
   "legacyId": "18006080",
   "bg": {
@@ -233,7 +233,7 @@
  {
   "_id": "collection-18006082",
   "_type": "helpCollection",
-  "icon": "coins",
+  "icon": "bank",
   "order": 10,
   "legacyId": "18006082",
   "bg": {
@@ -256,7 +256,7 @@
  {
   "_id": "collection-18006083",
   "_type": "helpCollection",
-  "icon": "message-circle",
+  "icon": "chats-circle",
   "order": 11,
   "legacyId": "18006083",
   "bg": {
@@ -279,7 +279,7 @@
  {
   "_id": "collection-18005759",
   "_type": "helpCollection",
-  "icon": "settings",
+  "icon": "gear-six",
   "order": 12,
   "legacyId": "18005759",
   "bg": {
@@ -563,7 +563,7 @@
     {
      "_type": "block",
      "_key": "be00ea21a4f8",
-     "style": "normal",
+     "style": "h3",
      "markDefs": [],
      "children": [
       {
@@ -945,7 +945,7 @@
     {
      "_type": "block",
      "_key": "be00ea21a4f8",
-     "style": "normal",
+     "style": "h3",
      "markDefs": [],
      "children": [
       {

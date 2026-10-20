@@ -1,7 +1,6 @@
 import { createClient } from "next-sanity";
-import seed from "../../content/seed.json";
 import type { Locale } from "@/i18n/config";
-import { apiVersion, dataset, isSanityConfigured, projectId } from "@/sanity/env";
+import { apiVersion, dataset, projectId } from "@/sanity/env";
 import type { ArticleBody, Author } from "./types";
 
 type Localized<T> = Partial<Record<Locale, T | null>>;
@@ -46,7 +45,6 @@ export type RawSettings = Localized<SettingsTranslation> & {
 };
 
 export type Dataset = {
-  source: "sanity" | "local";
   settings: RawSettings;
   authors: Record<string, Author>;
   collections: RawCollection[];
@@ -90,50 +88,13 @@ type QueryResult = {
   articles: RawArticle[];
 };
 
-async function fetchFromSanity(): Promise<Dataset> {
+export async function loadDataset(): Promise<Dataset> {
   const client = createClient({ projectId, dataset, apiVersion, useCdn: true, perspective: "published" });
   const result = await client.fetch<QueryResult>(DATASET_QUERY);
   return {
-    source: "sanity",
     settings: result.settings ?? {},
     authors: Object.fromEntries(result.authors.map(({ _id, ...a }) => [_id, a])),
     collections: result.collections,
     articles: result.articles,
   };
-}
-
-type SeedDoc = Record<string, unknown> & { _id: string; _type: string };
-type WithSlugObject = { slug?: { current?: string } } & Record<string, unknown>;
-
-function flattenSlugs<T>(doc: SeedDoc): T {
-  const out: Record<string, unknown> = { ...doc };
-  for (const locale of ["bg", "en"] as const) {
-    const t = doc[locale] as WithSlugObject | undefined;
-    if (t) out[locale] = { ...t, slug: t.slug?.current };
-  }
-  return out as T;
-}
-
-function fromSeed(): Dataset {
-  const docs = seed as SeedDoc[];
-  const ref = (v: unknown) => (v as { _ref?: string } | undefined)?._ref;
-  return {
-    source: "local",
-    settings: (docs.find((d) => d._type === "siteSettings") ?? {}) as RawSettings,
-    authors: Object.fromEntries(
-      docs.filter((d) => d._type === "author").map((d) => [d._id, { name: String(d.name) }]),
-    ),
-    collections: docs.filter((d) => d._type === "helpCollection").map((d) => flattenSlugs<RawCollection>(d)),
-    articles: docs
-      .filter((d) => d._type === "article")
-      .map((d) => ({
-        ...flattenSlugs<RawArticle>(d),
-        collectionId: ref(d.collection),
-        authorId: ref(d.author),
-      })),
-  };
-}
-
-export async function loadDataset(): Promise<Dataset> {
-  return isSanityConfigured ? fetchFromSanity() : fromSeed();
 }

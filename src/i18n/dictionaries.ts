@@ -9,6 +9,10 @@ const bg = {
   by: "От",
   writtenBy: "Написано от",
   andMore: (n: number) => ` и още ${n}`,
+  previous: "Предишна",
+  next: "Следваща",
+  // "във" before words starting with в/ф, per Bulgarian orthography.
+  moreIn: (collection: string) => `Още ${/^[вф]/i.test(collection) ? "във" : "в"} ${collection}`,
   articleCount: (n: number) => `${n} ${n === 1 ? "статия" : "статии"}`,
   updatedOn: (date: string) => `Актуализирано на ${date}`,
   tableOfContents: "Съдържание",
@@ -17,7 +21,7 @@ const bg = {
   emptyCollection: "В тази колекция все още няма публикувани статии.",
   emptyHelpCenterTitle: "Празен център за помощ",
   emptyHelpCenter: "В този център за помощ все още няма статии или колекции.",
-  toMainSite: "Към",
+  toMainSite: "Към Inverso.bg",
   language: "Език",
   menu: "Меню",
   search: {
@@ -38,10 +42,10 @@ const bg = {
   },
   reactions: {
     question: "Това отговори ли на въпроса ви?",
-    thanks: "Благодарим за обратната връзка!",
-    disappointed: "Разочарован",
-    neutral: "Безучастен",
-    smiley: "Усмивка",
+    thanks: "Благодарим за обратната връзка",
+    disappointed: "Не",
+    neutral: "Отчасти",
+    smiley: "Да",
   },
   notFound: {
     title: "Хм. Тази страница не съществува.",
@@ -56,7 +60,6 @@ const bg = {
     home: "Начало",
   },
   loading: "Зареждане",
-  homeTitle: "Начало",
 };
 
 export type Dictionary = typeof bg;
@@ -70,15 +73,18 @@ const en: Dictionary = {
   by: "By",
   writtenBy: "Written by",
   andMore: (n: number) => ` and ${n} more`,
+  previous: "Previous",
+  next: "Next",
+  moreIn: (collection: string) => `More in ${collection}`,
   articleCount: (n: number) => `${n} ${n === 1 ? "article" : "articles"}`,
   updatedOn: (date: string) => `Updated on ${date}`,
-  tableOfContents: "Table of contents",
+  tableOfContents: "Contents",
   relatedArticles: "Related articles",
   noBody: "This article doesn't have any content yet.",
   emptyCollection: "There are no published articles in this collection yet.",
   emptyHelpCenterTitle: "Empty help center",
   emptyHelpCenter: "This help center doesn't have any articles or collections yet.",
-  toMainSite: "Go to",
+  toMainSite: "Go to Inverso.bg",
   language: "Language",
   menu: "Menu",
   search: {
@@ -99,10 +105,10 @@ const en: Dictionary = {
   },
   reactions: {
     question: "Did this answer your question?",
-    thanks: "Thanks for your feedback!",
-    disappointed: "Disappointed",
-    neutral: "Neutral",
-    smiley: "Smiley",
+    thanks: "Thanks for your feedback",
+    disappointed: "No",
+    neutral: "Partly",
+    smiley: "Yes",
   },
   notFound: {
     title: "Hmm. This page doesn't exist.",
@@ -117,7 +123,6 @@ const en: Dictionary = {
     home: "Home",
   },
   loading: "Loading",
-  homeTitle: "Home",
 };
 
 const dictionaries: Record<Locale, Dictionary> = { bg, en };

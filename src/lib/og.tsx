@@ -8,7 +8,7 @@ export const ogSize = { width: 1200, height: 630 };
 const assets = Promise.all([
   readFile(join(process.cwd(), "src/assets/fonts/Inter-500.ttf")),
   readFile(join(process.cwd(), "src/assets/fonts/Inter-700.ttf")),
-  readFile(join(process.cwd(), "public/brand/logo.png"), "base64"),
+  readFile(join(process.cwd(), "public/brand/inverso-logo-white.svg"), "base64"),
 ]);
 
 type OgProps = {
@@ -33,22 +33,21 @@ export async function renderOgImage({ locale, siteName, title, eyebrow, descript
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "64px 72px",
-          background: "#000",
-          backgroundImage:
-            "radial-gradient(circle at 92% 8%, rgba(159,229,207,0.28), transparent 42%), radial-gradient(circle at 0% 100%, rgba(79,70,229,0.35), transparent 45%)",
+          background: "rgb(28,28,28)",
+          backgroundImage: "radial-gradient(circle at 92% 8%, rgba(170,225,201,0.22), transparent 45%)",
           color: "#fff",
           fontFamily: "Inter",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`data:image/png;base64,${logo}`} width={64} height={64} alt="" />
-          <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: -0.5 }}>{siteName}</div>
+          <img src={`data:image/svg+xml;base64,${logo}`} width={188} height={44} alt="" />
+          <div style={{ fontSize: 30, fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>{siteName}</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 22, maxWidth: 1000 }}>
           {eyebrow && (
-            <div style={{ fontSize: 28, fontWeight: 500, color: "#9fe5cf", textTransform: "uppercase", letterSpacing: 2 }}>
+            <div style={{ fontSize: 28, fontWeight: 500, color: "rgb(170,225,201)", textTransform: "uppercase", letterSpacing: 2 }}>
               {eyebrow}
             </div>
           )}

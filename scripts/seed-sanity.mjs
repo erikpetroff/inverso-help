@@ -27,8 +27,8 @@ async function upload(file) {
   return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
 }
 
-const avatar = await upload("public/brand/avatar.png");
-const logo = await upload("public/brand/logo.png");
+const avatar = await upload("public/brand/avatar.svg");
+const logo = await upload("public/brand/inverso-logo-white.svg");
 for (const doc of docs) {
   if (doc._type === "author" && !doc.avatar) doc.avatar = avatar;
   if (doc._type === "siteSettings" && !doc.logo) doc.logo = logo;
