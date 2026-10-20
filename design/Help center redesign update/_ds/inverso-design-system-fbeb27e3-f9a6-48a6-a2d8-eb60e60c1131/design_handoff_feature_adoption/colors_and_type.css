@@ -1,0 +1,259 @@
+/* ================================================================
+   Inverso Design System — Colors & Type
+   ================================================================
+   Derived from the Inverso Figma (SnowUI-based) design system.
+   Palette: mono-forward (black/white dominant), mint-teal brand accent
+   (logo mark), secondary accent system incl. purple/indigo/blue/cyan/
+   mint/green/yellow/orange/red. Type is Inter across the system.
+   ================================================================ */
+
+/* --- Fonts ---
+   Inter is loaded from Google Fonts (substitute for uploaded TTFs — flag).
+   If you have the original Inter files, drop them into fonts/ and
+   replace the @import below with @font-face rules. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+
+:root {
+  /* ---------------------------------------------------------------
+     COLOR — Neutrals (Black scale, SnowUI Light)
+     Used for text, icons, borders, overlays, subtle surfaces.
+     --------------------------------------------------------------- */
+  --black-100: rgb(28, 28, 28);      /* true brand black */
+  --black-80:  rgba(28, 28, 28, 0.8);
+  --black-60:  rgba(28, 28, 28, 0.6);
+  --black-40:  rgba(28, 28, 28, 0.4);
+  --black-20:  rgba(28, 28, 28, 0.2);
+  --black-10:  rgba(28, 28, 28, 0.1);
+  --black-5:   rgba(28, 28, 28, 0.05);
+
+  --white-100: rgb(255, 255, 255);
+  --white-80:  rgba(255, 255, 255, 0.8);
+  --white-60:  rgba(255, 255, 255, 0.6);
+  --white-40:  rgba(255, 255, 255, 0.4);
+  --white-20:  rgba(255, 255, 255, 0.2);
+  --white-10:  rgba(255, 255, 255, 0.1);
+  --white-5:   rgba(255, 255, 255, 0.05);
+
+  /* ---------------------------------------------------------------
+     COLOR — Brand
+     The Inverso logo mark is mint. Primary brand in product is
+     monochrome (black on light, white on dark). Mint is the
+     expressive/marketing accent.
+     --------------------------------------------------------------- */
+  --brand-mint:      rgb(170, 225, 201);   /* logo mint (uploaded mark) */
+  --brand-mint-soft: rgb(198, 234, 216);
+  --brand-mint-ink:  rgb(61, 130, 98);     /* readable mint ink */
+  --brand-black:     rgb(28, 28, 28);
+  --brand-white:     rgb(255, 255, 255);
+
+  /* ---------------------------------------------------------------
+     COLOR — Secondary (SnowUI soft pastels)
+     The light-mode product palette uses low-chroma tints for
+     tag/badge/illustration accents.
+     --------------------------------------------------------------- */
+  --s-purple:  rgb(198, 199, 248);
+  --s-indigo:  rgb(168, 197, 218);
+  --s-blue:    rgb(185, 225, 245);
+  --s-cyan:    rgb(169, 221, 230);
+  --s-mint:    rgb(186, 237, 189);
+  --s-green:   rgb(149, 165, 166);
+  --s-yellow:  rgb(255, 232, 158);
+  --s-orange:  rgb(255, 203, 158);
+  --s-red:     rgb(255, 186, 178);
+
+  /* ---------------------------------------------------------------
+     COLOR — Secondary (iOS/macOS vivid)
+     Used for charts, status, accent fills.
+     --------------------------------------------------------------- */
+  --v-purple: rgb(175, 82, 222);
+  --v-indigo: rgb(88, 86, 214);
+  --v-blue:   rgb(0, 122, 255);
+  --v-cyan:   rgb(50, 173, 230);
+  --v-mint:   rgb(0, 199, 190);
+  --v-green:  rgb(52, 199, 89);
+  --v-yellow: rgb(255, 204, 0);
+  --v-orange: rgb(255, 149, 0);
+  --v-red:    rgb(255, 59, 48);
+
+  /* Special accent used throughout Figma docs for link/annotation */
+  --accent-link: rgb(151, 71, 255);
+
+  /* ---------------------------------------------------------------
+     COLOR — Backgrounds (light mode)
+     --------------------------------------------------------------- */
+  --bg-1: rgb(255, 255, 255);      /* surfaces */
+  --bg-2: rgb(247, 249, 251);      /* app canvas */
+  --bg-3: rgb(246, 246, 246);      /* recessed */
+  --bg-4: rgb(229, 236, 246);      /* tinted strip */
+  --bg-5: rgb(227, 245, 255);      /* info */
+
+  /* ---------------------------------------------------------------
+     SEMANTIC — Foreground / Background / Border
+     --------------------------------------------------------------- */
+  --fg-1: var(--black-100);        /* primary text */
+  --fg-2: var(--black-60);         /* secondary text */
+  --fg-3: var(--black-40);         /* tertiary / placeholder */
+  --fg-4: var(--black-20);         /* disabled */
+  --fg-on-dark: var(--white-100);
+  --fg-link: var(--accent-link);
+
+  --surface:      var(--bg-1);
+  --surface-alt:  var(--bg-2);
+  --surface-sunk: var(--bg-3);
+
+  --border-1: var(--black-10);     /* default border */
+  --border-2: var(--black-20);     /* stronger / focus track */
+  --border-subtle: var(--black-5);
+
+  /* ---------------------------------------------------------------
+     SEMANTIC — Status
+     --------------------------------------------------------------- */
+  --status-success: var(--v-green);
+  --status-warning: var(--v-orange);
+  --status-danger:  var(--v-red);
+  --status-info:    var(--v-blue);
+
+  /* ---------------------------------------------------------------
+     TYPE — Family
+     --------------------------------------------------------------- */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ---------------------------------------------------------------
+     TYPE — Scale (Inter sizes recorded in the Figma metadata)
+     Weights: 400 Regular, 500 Medium, 600 Semibold.
+     Line heights tuned to Figma's defaults (~1.4 for body, tighter
+     for display).
+     --------------------------------------------------------------- */
+  --text-64: 64px;   --lh-64: 72px;
+  --text-48: 48px;   --lh-48: 56px;
+  --text-32: 32px;   --lh-32: 40px;
+  --text-24: 24px;   --lh-24: 32px;
+  --text-18: 18px;   --lh-18: 26px;
+  --text-16: 16px;   --lh-16: 24px;
+  --text-14: 14px;   --lh-14: 20px;
+  --text-12: 12px;   --lh-12: 18px;
+
+  --fw-regular: 400;   /* @kind font */
+  --fw-medium:  500;   /* @kind font */
+  --fw-semibold: 600;  /* @kind font */
+
+  /* ---------------------------------------------------------------
+     SPACING — multiples of 4 (Figma convention)
+     --------------------------------------------------------------- */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 40px;
+  --space-9: 48px;
+
+  /* ---------------------------------------------------------------
+     RADIUS — multiples of 4 (Spacing/Icon size/Corner radius page)
+     --------------------------------------------------------------- */
+  --radius-0: 0px;
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+  --radius-4: 16px;
+  --radius-5: 20px;
+  --radius-6: 24px;
+  --radius-7: 32px;
+  --radius-round: 9999px;
+
+  /* ---------------------------------------------------------------
+     ICON SIZES
+     --------------------------------------------------------------- */
+  --icon-16: 16px;
+  --icon-20: 20px;
+  --icon-24: 24px;
+  --icon-28: 28px;
+  --icon-32: 32px;
+  --icon-40: 40px;
+  --icon-48: 48px;
+  --icon-80: 80px;
+
+  /* ---------------------------------------------------------------
+     EFFECTS — Shadows (Effect styles page)
+     --------------------------------------------------------------- */
+  --shadow-drop-1: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-drop-2: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-inner:  inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --shadow-focus:  0 0 0 3px rgba(28, 28, 28, 0.15);
+  --shadow-focus-brand: 0 0 0 3px rgba(170, 225, 201, 0.4);
+  --shadow-glow:   0 0 24px rgba(170, 225, 201, 0.55);
+  --blur-bg-40:    blur(40px);
+  --blur-bg-100:   blur(100px);
+
+  /* ---------------------------------------------------------------
+     MOTION
+     --------------------------------------------------------------- */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);  /* @kind other */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);   /* @kind other */
+  --ease-in:       cubic-bezier(0.4, 0, 1, 1);      /* @kind other */
+  --dur-fast:      120ms;  /* @kind other */
+  --dur-base:      200ms;  /* @kind other */
+  --dur-slow:      320ms;  /* @kind other */
+}
+
+/* ================================================================
+   SEMANTIC TYPE CLASSES
+   Inter is the single family. Semibold for headings, Regular for body.
+   ================================================================ */
+html { font-family: var(--font-sans); color: var(--fg-1); }
+body { font-family: var(--font-sans); color: var(--fg-1); background: var(--surface); }
+
+.t-display-1, h1.display {
+  font: var(--fw-semibold) var(--text-64)/var(--lh-64) var(--font-sans);
+  letter-spacing: -0.02em;
+}
+.t-display-2 {
+  font: var(--fw-semibold) var(--text-48)/var(--lh-48) var(--font-sans);
+  letter-spacing: -0.02em;
+}
+h1, .t-h1 {
+  font: var(--fw-semibold) var(--text-32)/var(--lh-32) var(--font-sans);
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+h2, .t-h2 {
+  font: var(--fw-semibold) var(--text-24)/var(--lh-24) var(--font-sans);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+h3, .t-h3 {
+  font: var(--fw-semibold) var(--text-18)/var(--lh-18) var(--font-sans);
+  margin: 0;
+}
+h4, .t-h4 {
+  font: var(--fw-semibold) var(--text-16)/var(--lh-16) var(--font-sans);
+  margin: 0;
+}
+p, .t-body {
+  font: var(--fw-regular) var(--text-14)/var(--lh-14) var(--font-sans);
+  color: var(--fg-1);
+  margin: 0;
+}
+.t-body-lg {
+  font: var(--fw-regular) var(--text-16)/var(--lh-16) var(--font-sans);
+}
+.t-body-sm, small {
+  font: var(--fw-regular) var(--text-12)/var(--lh-12) var(--font-sans);
+  color: var(--fg-2);
+}
+.t-label {
+  font: var(--fw-medium) var(--text-14)/var(--lh-14) var(--font-sans);
+}
+.t-caption {
+  font: var(--fw-regular) var(--text-12)/var(--lh-12) var(--font-sans);
+  color: var(--fg-3);
+}
+.t-mono, code, kbd {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}

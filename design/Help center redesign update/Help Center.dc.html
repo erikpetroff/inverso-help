@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/inverso-design-system-fbeb27e3-f9a6-48a6-a2d8-eb60e60c1131/colors_and_type.css">
+<link rel="stylesheet" href="_ds/inverso-design-system-fbeb27e3-f9a6-48a6-a2d8-eb60e60c1131/design_handoff_feature_adoption/colors_and_type.css">
+<script src="_ds/inverso-design-system-fbeb27e3-f9a6-48a6-a2d8-eb60e60c1131/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+body{margin:0;background:#F7F9FB;font-family:Inter,sans-serif;color:rgb(28,28,28);-webkit-font-smoothing:antialiased}
+a{color:rgb(28,28,28);text-decoration:none}a:hover{color:rgb(28,28,28);text-decoration:underline}
+input::placeholder{color:rgba(28,28,28,0.4)}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <header style="background:rgb(28,28,28);color:#fff;padding:{{ headerPad }}">
+    <div style="max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:{{ headerGap }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <a href="#" onClick="{{ goHome }}" style="display:flex"><img src="assets/inverso-logo-white.svg" alt="Inverso Help Center" style="height:28px;display:block"></a>
+        <div style="display:flex;align-items:center;gap:8px">
+          <a href="https://inverso.bg" style="color:rgba(255,255,255,0.8);font-size:14px;padding:8px 12px;border-radius:8px" style-hover="background:rgba(255,255,255,0.08);color:#fff">{{ t.toSite }}</a>
+          <div style="position:relative">
+            <button onClick="{{ toggleLang }}" aria-haspopup="listbox" aria-expanded="{{ langOpen }}" style="display:flex;align-items:center;gap:6px;font:inherit;font-size:14px;color:#fff;background:transparent;cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2)" style-hover="background:rgba(255,255,255,0.08)"><img src="{{ langFlag }}" alt="" style="width:20px;height:14px;border-radius:2px;object-fit:cover;display:block;box-shadow:0 0 0 1px rgba(255,255,255,0.2)"><span>{{ langLabel }}</span><i class="ph ph-caret-down" style="font-size:12px"></i></button>
+            <sc-if value="{{ langOpen }}" hint-placeholder-val="{{ false }}">
+              <div role="listbox" style="position:absolute;right:0;top:calc(100% + 8px);z-index:10;min-width:180px;background:#fff;color:rgb(28,28,28);border-radius:12px;padding:4px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.1);display:flex;flex-direction:column">
+                <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+                  <button role="option" onClick="{{ l.pick }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;font:inherit;font-size:14px;line-height:20px;color:rgb(28,28,28);background:transparent;border:0;cursor:pointer;text-align:left;padding:8px 12px;border-radius:8px" style-hover="background:rgba(0,0,0,0.05)"><span style="display:flex;align-items:center;gap:10px"><img src="{{ l.flag }}" alt="" style="width:20px;height:14px;border-radius:2px;object-fit:cover;display:block;box-shadow:0 0 0 1px rgba(0,0,0,0.1)">{{ l.label }}</span><sc-if value="{{ l.on }}" hint-placeholder-val="{{ false }}"><i class="ph ph-check" style="font-size:16px"></i></sc-if></button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+          <h1 style="margin:0;font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.02em;text-wrap:pretty;max-width:640px">{{ t.hero }}</h1>
+        </sc-if>
+        <label style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:0 16px;height:{{ searchH }};max-width:720px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+          <i class="ph ph-magnifying-glass" style="font-size:20px;color:rgba(28,28,28,0.4)"></i>
+          <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="{{ t.search }}" style="flex:1;border:0;outline:0;font:inherit;font-size:16px;color:rgb(28,28,28);background:transparent;min-width:0">
+          <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearQuery }}" style="border:0;background:transparent;cursor:pointer;display:flex;padding:4px;border-radius:6px;color:rgba(28,28,28,0.4)" style-hover="background:rgba(0,0,0,0.05)"><i class="ph ph-x" style="font-size:16px"></i></button></sc-if>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+  <main id="main-content" style="flex:1;padding:0 24px 80px;margin-top:-32px">
+    <div style="max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+      <sc-if value="{{ hasArticleHits }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;overflow:hidden">
+          <div style="padding:16px 24px;font-size:12px;line-height:16px;font-weight:600;color:rgba(28,28,28,0.6);border-bottom:1px solid rgba(0,0,0,0.1)">{{ t.articles }} · {{ articleHitsLabel }}</div>
+          <sc-for list="{{ articleHits }}" as="a" hint-placeholder-count="3">
+            <a href="#" onClick="{{ a.open }}" style="display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid rgba(0,0,0,0.06);text-decoration:none" style-hover="background:rgba(0,0,0,0.03);text-decoration:none">
+              <i class="ph ph-file-text" style="font-size:20px;color:rgba(28,28,28,0.4)"></i>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="font-size:14px;line-height:20px;font-weight:500">{{ a.title }}</span>
+                <span style="font-size:12px;line-height:16px;color:rgba(28,28,28,0.6)">{{ t.invoices }}</span>
+              </div>
+              <i class="ph ph-caret-right" style="font-size:16px;color:rgba(28,28,28,0.4)"></i>
+            </a>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+        <sc-for list="{{ collections }}" as="c" hint-placeholder-count="12">
+          <a href="{{ c.href }}" onClick="{{ c.onClick }}" style="display:flex;flex-direction:column;gap:16px;background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:24px;text-decoration:none;transition:box-shadow 160ms cubic-bezier(0.2,0.8,0.2,1),border-color 160ms" style-hover="box-shadow:0 4px 12px rgba(0,0,0,0.08);border-color:rgba(0,0,0,0.2);text-decoration:none">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgb(170,225,201);display:flex;align-items:center;justify-content:center"><i class="{{ c.icon }}" style="font-size:20px;color:rgb(28,28,28)"></i></div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+              <div style="font-size:16px;line-height:24px;font-weight:600">{{ c.title }}</div>
+              <div style="font-size:14px;line-height:20px;color:rgba(28,28,28,0.6);text-wrap:pretty">{{ c.desc }}</div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;line-height:16px;color:rgba(28,28,28,0.6)">
+              <span>{{ c.by }}</span>
+              <span style="background:#F6F6F6;border-radius:9999px;padding:2px 8px;color:rgb(28,28,28)">{{ c.countLabel }}</span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:48px 24px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+          <i class="ph ph-magnifying-glass" style="font-size:32px;color:rgba(28,28,28,0.4)"></i>
+          <div style="font-size:16px;font-weight:600">{{ t.noResults }}</div>
+          <div style="font-size:14px;color:rgba(28,28,28,0.6)">{{ t.tryOther }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isCollection }}" hint-placeholder-val="{{ true }}">
+  <main id="main-content" data-screen-label="Collection" style="flex:1;padding:32px 24px 80px">
+    <div style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+      <nav style="display:flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:rgba(28,28,28,0.6)">
+        <a href="#" onClick="{{ goHome }}" style="color:rgba(28,28,28,0.6)">Всички колекции</a>
+        <i class="ph ph-caret-right" style="font-size:12px"></i>
+        <span style="color:rgb(28,28,28)">{{ t.invoices }}</span>
+      </nav>
+      <div style="display:flex;gap:20px;align-items:flex-start">
+        <div style="width:56px;height:56px;flex:none;border-radius:16px;background:rgb(170,225,201);display:flex;align-items:center;justify-content:center"><i class="ph ph-receipt" style="font-size:28px"></i></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <h1 style="margin:0;font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.02em">{{ t.invoices }}</h1>
+          <p style="margin:0;font-size:16px;line-height:24px;color:rgba(28,28,28,0.6)">{{ t.invoicesDesc }}</p>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;color:rgba(28,28,28,0.6)">
+            <span>{{ t.byInverso }}</span><span style="width:3px;height:3px;border-radius:9999px;background:rgba(28,28,28,0.4)"></span><span>{{ t.count13 }}</span>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;overflow:hidden">
+        <sc-for list="{{ questions }}" as="q" hint-placeholder-count="13">
+          <a href="#" onClick="{{ q.open }}" style="display:flex;align-items:center;gap:16px;padding:16px 24px;border-bottom:1px solid rgba(0,0,0,0.06);text-decoration:none;transition:background 120ms" style-hover="background:rgba(0,0,0,0.03);text-decoration:none">
+            <span style="width:28px;height:28px;flex:none;border-radius:9999px;background:#F6F6F6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums">{{ q.n }}</span>
+            <span style="flex:1;font-size:14px;line-height:20px;font-weight:500;text-wrap:pretty">{{ q.text }}</span>
+            <i class="ph ph-caret-right" style="font-size:16px;color:rgba(28,28,28,0.4)"></i>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isArticle }}" hint-placeholder-val="{{ false }}">
+  <main id="main-content" data-screen-label="Article" style="flex:1;padding:32px 24px 80px">
+    <div style="max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+      <nav style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;line-height:20px;color:rgba(28,28,28,0.6)">
+        <a href="#" onClick="{{ goHome }}" style="color:rgba(28,28,28,0.6)">Всички колекции</a>
+        <i class="ph ph-caret-right" style="font-size:12px"></i>
+        <a href="#" onClick="{{ goCollection }}" style="color:rgba(28,28,28,0.6)">{{ t.invoices }}</a>
+        <i class="ph ph-caret-right" style="font-size:12px"></i>
+        <span style="color:rgb(28,28,28)">{{ art.title }}</span>
+      </nav>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px;align-items:start">
+        <article style="grid-column:span 3;min-width:0;background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:40px;display:flex;flex-direction:column;gap:32px">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <h1 style="margin:0;font-size:36px;line-height:44px;font-weight:600;letter-spacing:-0.02em;text-wrap:pretty">{{ art.title }}</h1>
+            <sc-if value="{{ art.hasLead }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:18px;line-height:28px;color:rgba(28,28,28,0.6);text-wrap:pretty">{{ art.lead }}</p></sc-if>
+            <div style="display:flex;align-items:center;gap:12px;padding-top:8px">
+              <img src="assets/inverso-icon.svg" alt="" style="width:32px;height:32px;border-radius:9999px;background:rgb(28,28,28);padding:6px;box-sizing:border-box">
+              <div style="display:flex;flex-direction:column">
+                <span style="font-size:14px;line-height:20px">{{ t.writtenBy }} <strong style="font-weight:600">Inverso</strong></span>
+                <span style="font-size:12px;line-height:16px;color:rgba(28,28,28,0.6)">{{ art.date }}</span>
+              </div>
+            </div>
+          </div>
+          <sc-if value="{{ art.hasBody }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:32px">
+              <sc-for list="{{ art.sections }}" as="s" hint-placeholder-count="5">
+                <section id="{{ s.id }}" style="display:flex;flex-direction:column;gap:12px;padding-top:32px;border-top:1px solid rgba(0,0,0,0.1)">
+                  <h2 style="margin:0;display:flex;align-items:baseline;gap:12px;font-size:22px;line-height:30px;font-weight:600;letter-spacing:-0.01em">
+                    <span style="font-size:12px;line-height:16px;padding:2px 8px;border-radius:9999px;background:rgb(170,225,201);font-variant-numeric:tabular-nums">{{ s.num }}</span>
+                    <span>{{ s.title }}</span>
+                  </h2>
+                  <ul style="margin:0;padding:0 0 0 20px;display:flex;flex-direction:column;gap:12px;font-size:18px;line-height:30px">
+                    <sc-for list="{{ s.items }}" as="it" hint-placeholder-count="2">
+                      <li style="text-wrap:pretty"><sc-for list="{{ it }}" as="seg" hint-placeholder-count="1"><sc-if value="{{ seg.b }}" hint-placeholder-val="{{ false }}"><strong style="font-weight:600">{{ seg.t }}</strong></sc-if><sc-if value="{{ seg.p }}" hint-placeholder-val="{{ true }}"><span>{{ seg.t }}</span></sc-if></sc-for></li>
+                    </sc-for>
+                  </ul>
+                </section>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ art.noBody }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:20px 24px;border-radius:12px;background:#F7F9FB;border:1px solid rgba(0,0,0,0.06)">
+              <span style="font-size:14px;line-height:20px;color:rgba(28,28,28,0.6)">{{ t.fullText }}</span>
+              <a href="{{ art.href }}" style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:8px 16px;border-radius:8px;background:rgb(28,28,28);color:#fff" style-hover="background:rgb(48,48,48);color:#fff;text-decoration:none">{{ t.openArticle }}<i class="ph ph-arrow-up-right" style="font-size:16px"></i></a>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px;border-radius:16px;background:#F7F9FB">
+            <span style="font-size:14px;line-height:20px;font-weight:600">{{ feedbackLabel }}</span>
+            <div style="display:flex;gap:8px">
+              <sc-for list="{{ reactions }}" as="r" hint-placeholder-count="3">
+                <button onClick="{{ r.pick }}" aria-label="{{ r.label }}" style="width:48px;height:48px;border-radius:9999px;border:1px solid {{ r.border }};background:{{ r.bg }};cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 120ms" style-hover="background:rgba(0,0,0,0.05)"><i class="{{ r.icon }}" style="font-size:24px;color:rgb(28,28,28)"></i></button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:12px">
+            <sc-if value="{{ prev }}" hint-placeholder-val="{{ true }}">
+              <a href="#" onClick="{{ prev.open }}" style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:4px;padding:16px;border-radius:12px;border:1px solid rgba(0,0,0,0.1);text-decoration:none" style-hover="border-color:rgba(0,0,0,0.2);text-decoration:none">
+                <span style="display:flex;align-items:center;gap:4px;font-size:12px;line-height:16px;color:rgba(28,28,28,0.6)"><i class="ph ph-arrow-left" style="font-size:12px"></i>{{ t.prev }}</span>
+                <span style="font-size:14px;line-height:20px;font-weight:500">{{ prev.title }}</span>
+              </a>
+            </sc-if>
+            <sc-if value="{{ next }}" hint-placeholder-val="{{ true }}">
+              <a href="#" onClick="{{ next.open }}" style="flex:1 1 220px;min-width:0;margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:4px;padding:16px;border-radius:12px;border:1px solid rgba(0,0,0,0.1);text-decoration:none" style-hover="border-color:rgba(0,0,0,0.2);text-decoration:none">
+                <span style="display:flex;align-items:center;gap:4px;font-size:12px;line-height:16px;color:rgba(28,28,28,0.6)">{{ t.next }}<i class="ph ph-arrow-right" style="font-size:12px"></i></span>
+                <span style="font-size:14px;line-height:20px;font-weight:500">{{ next.title }}</span>
+              </a>
+            </sc-if>
+          </div>
+        </article>
+        <aside style="position:sticky;top:24px;display:flex;flex-direction:column;gap:16px;min-width:0">
+          <sc-if value="{{ art.hasBody }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;line-height:16px;font-weight:600;color:rgba(28,28,28,0.6);padding:4px 8px 8px">{{ t.toc }}</span>
+              <sc-for list="{{ art.sections }}" as="s" hint-placeholder-count="5">
+                <a href="#" onClick="{{ s.jump }}" style="display:flex;gap:8px;font-size:14px;line-height:20px;padding:6px 8px;border-radius:8px;text-decoration:none" style-hover="background:rgba(0,0,0,0.05);text-decoration:none"><span style="color:rgba(28,28,28,0.4);font-variant-numeric:tabular-nums">{{ s.num }}</span><span>{{ s.title }}</span></a>
+              </sc-for>
+            </div>
+          </sc-if>
+          <div style="background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:12px;line-height:16px;font-weight:600;color:rgba(28,28,28,0.6);padding:4px 8px 8px">{{ t.moreIn }}</span>
+            <sc-for list="{{ related }}" as="q" hint-placeholder-count="4">
+              <a href="#" onClick="{{ q.open }}" style="font-size:14px;line-height:20px;padding:6px 8px;border-radius:8px;text-decoration:none;text-wrap:pretty" style-hover="background:rgba(0,0,0,0.05);text-decoration:none">{{ q.title }}</a>
+            </sc-for>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  </sc-if>
+
+  <footer style="border-top:1px solid rgba(0,0,0,0.1);background:#fff;padding:32px 24px">
+    <div style="max-width:1040px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+      <img src="assets/inverso-logo.svg" alt="Inverso" style="height:22px;display:block">
+      <div style="display:flex;gap:24px;font-size:14px;color:rgba(28,28,28,0.6)">
+        <a href="https://help.inverso.bg/bg/" style="color:rgba(28,28,28,0.6)">Inverso Help Center</a>
+        <span>© 2026 Inverso.bg</span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;collection&quot;,&quot;article&quot;],&quot;default&quot;:&quot;collection&quot;,&quot;tsType&quot;:&quot;'home'|'collection'|'article'&quot;}}">
+const B = 'https://help.inverso.bg/bg/collections/';
+const DATA = [
+  ['12276517-фактури','ph ph-receipt','Фактури','Работа с модула "Фактури" в Inverso.bg','Inverso',13],
+  ['12276533-клиенти','ph ph-users','Клиенти','Работа с модула "Клиенти" в Inverso.bg','Inverso',6],
+  ['12276616-услуги','ph ph-package','Услуги','Работа с модула "Услуги" в Inverso.bg','Inverso',3],
+  ['18005834-плащания','ph ph-credit-card','Плащания','Контрол върху плащания, начини на разплащане и проследяване','Inverso',1],
+  ['18006045-транзакции','ph ph-arrows-left-right','Транзакции','Преглед и проследяване на всички транзакции','Inverso',3],
+  ['18005849-управление-на-абонаментен-план','ph ph-crown-simple','Управление на абонаментен план','Преглед и управление на вашия абонаментен план','Inverso',3],
+  ['18005888-проекти','ph ph-folder-simple','Проекти','Създавайте и управлявайте проекти на едно място','Inverso',4],
+  ['18005900-екип','ph ph-users-three','Екип','Контрол върху потребителски роли и права в организацията','Mira и още 1',3],
+  ['18006080-управление-на-организации','ph ph-buildings','Управление на организации','Създаване и управление на организации и достъпи.','Inverso',1],
+  ['18006082-финансиране','ph ph-bank','Финансиране','Преглед и управление на финансирането','Inverso',2],
+  ['18006083-виртуален-асистент-mira-vs-inverso-чат','ph ph-chats-circle','Виртуален Асистент Mira vs Inverso чат','Помощ и поддръжка','Inverso',1],
+  ['18005759-настройки','ph ph-gear-six','Настройки','Персонализирайте лого, фактури и основни настройки на профила','Inverso',6],
+].map(([slug,icon,title,desc,by,n]) => ({slug,href:B+encodeURIComponent(slug),icon,title,desc,by:'От '+by,countLabel:n+(n===1?' статия':' статии')}));
+const A = 'https://help.inverso.bg/bg/articles/';
+const Q = [
+  ['11018442','Достъп до модула "Фактури"'],
+  ['11018463','Как да създам нова фактура?'],
+  ['11018469','Как да управлявам фактурите си?'],
+  ['11018497','Как да експортирам фактури?'],
+  ['13430491','Как да импортирам фактурите си?'],
+  ['13430509','Как мога да насроча фактурите си?'],
+  ['13430513','Как да направя Превалутиране (Invoice) на фактурата си?'],
+  ['13430517','Как да избера тип фактура - кредитно, дебитно известие, фактура проформа?'],
+  ['13430523','Как да променя типа фактура?'],
+  ['13430528','Как да избера метод на плащане "Плащане с карта"?'],
+  ['13430533','Как да прикача проект към фактура?'],
+  ['13430541','Как да променя статуса на фактурата си, за да ми се отрази в таблото?'],
+  ['13430773','Какво представлява функцията "Финансирай Фактурата си" с помощта на Smart Factoring?'],
+].map(([id,text],i) => ({id,n:i+1,text,title:(i+1)+'. '+text,href:A+id}));
+// rich text: **bold** segments
+const rt = s => s.split('**').map((t,i) => ({t, b: i%2===1, p: i%2===0}));
+const BODY = {
+  '11018463': {
+    lead: 'Създаване на фактури в inverso.bg – настройки, клиентски данни, продукти и плащания',
+    date: '25 август 2026 г.',
+    sections: [
+      ['2.1','Избор на основни настройки',['**Тип на фактурата**: Изберете дали фактурата е оригинал, коригираща или друг тип.','**Език**: Можете да изберете между **Български** и **Английски**.']],
+      ['2.2','Въвеждане на клиентски данни',['В полето **„Избери клиент"** изберете съществуващ клиент или добавете нов.','Въведете необходимите фирмени данни на клиента (име, ЕИК, ДДС номер, адрес и др.).']],
+      ['2.3','Добавяне на продукти или услуги',['Натиснете **„Добави нова услуга/продукт"**.','Въведете наименование, количество, единична цена и данъчни ставки (ДДС 20%, 9% или 0%).']],
+      ['2.4','Избор на метод на плащане',['Изберете дали плащането ще е чрез **банков превод**, **в брой** или **наложен платеж**.','При банков превод добавете банковата сметка, ако е необходимо.']],
+      ['2.5','Завършване на фактурата',['Проверете всички въведени данни в прегледа на фактурата.','Натиснете **„Запази"** за чернова или **„Изпращане"** за изпращане към клиента.']],
+    ],
+  },
+};
+const T = {
+  bg: { toSite:'Към Inverso.bg', hero:'Съвети и отговори от екипа на Inverso.bg', search:'Търсене на статии...', articles:'Статии', invoices:'Фактури', noResults:'Няма резултати', tryOther:'Опитайте с друга ключова дума.', invoicesDesc:'Работа с модула "Фактури" в Inverso.bg', byInverso:'От Inverso', count13:'13 статии', writtenBy:'Написано от', fullText:'Пълният текст на тази статия е в help.inverso.bg', openArticle:'Отвори статията', prev:'Предишна', next:'Следваща', toc:'Съдържание', moreIn:'Още във Фактури', ask:'Това отговори ли на въпроса ви?', thanks:'Благодарим за обратната връзка', by:'От ', and1:' и още 1', one:' статия', many:' статии', date:'25 август 2026 г.', r:['Не','Отчасти','Да'] },
+  en: { toSite:'Go to Inverso.bg', hero:'Tips and answers from the Inverso.bg team', search:'Search for articles...', articles:'Articles', invoices:'Invoices', noResults:'No results', tryOther:'Try a different keyword.', invoicesDesc:'Working with the "Invoices" module in Inverso.bg', byInverso:'By Inverso', count13:'13 articles', writtenBy:'Written by', fullText:'The full text of this article is on help.inverso.bg', openArticle:'Open Article', prev:'Previous', next:'Next', toc:'Contents', moreIn:'More in Invoices', ask:'Did this answer your question?', thanks:'Thanks for your feedback', by:'By ', and1:' and 1 other', one:' article', many:' articles', date:'August 25, 2026', r:['No','Partly','Yes'] },
+};
+const EN_C = [
+  ['Invoices','Working with the "Invoices" module in Inverso.bg'],
+  ['Clients','Working with the "Clients" module in Inverso.bg'],
+  ['Services','Working with the "Services" module in Inverso.bg'],
+  ['Payments','Payment control, payment methods and tracking'],
+  ['Transactions','Review and track all transactions'],
+  ['Subscription Plan','Review and manage your subscription plan'],
+  ['Projects','Create and manage projects in one place'],
+  ['Team','Control user roles and permissions in your organization'],
+  ['Organizations','Create and manage organizations and access.'],
+  ['Financing','Review and manage financing'],
+  ['Virtual Assistant Mira vs Inverso Chat','Help and support'],
+  ['Settings','Customize logo, invoices and core profile settings'],
+];
+const EN_Q = ['Accessing the "Invoices" module','How do I create a new invoice?','How do I manage my invoices?','How do I export invoices?','How do I import my invoices?','How can I schedule my invoices?','How do I convert the currency of my invoice?','How do I choose an invoice type – credit note, debit note, proforma?','How do I change the invoice type?','How do I choose "Card Payment" as a payment method?','How do I attach a project to an invoice?','How do I change an invoice status so it shows on the dashboard?','What is "Finance Your Invoice" with Smart Factoring?'];
+const EN_BODY = {
+  lead: 'Creating invoices in inverso.bg – settings, client details, products and payments',
+  sections: [
+    ['Choose basic settings',['**Invoice type**: Choose whether the invoice is an original, a correction or another type.','**Language**: Choose between **Bulgarian** and **English**.']],
+    ['Enter client details',['In the **"Select client"** field, choose an existing client or add a new one.','Enter the client\'s company details (name, UIC, VAT number, address, etc.).']],
+    ['Add products or services',['Click **"Add new service/product"**.','Enter the name, quantity, unit price and tax rate (VAT 20%, 9% or 0%).']],
+    ['Choose a payment method',['Choose whether payment is by **bank transfer**, **cash** or **cash on delivery**.','For bank transfers, add the bank account if needed.']],
+    ['Finish the invoice',['Review all entered details in the invoice preview.','Click **"Save"** for a draft or **"Send"** to send it to the client.']],
+  ],
+};
+class Component extends DCLogic {
+  componentDidMount() { this._off = e => { if (this.state.langOpen && !e.target.closest('[aria-haspopup="listbox"],[role="listbox"]')) this.setState({ langOpen: false }); }; document.addEventListener('click', this._off); }
+  componentWillUnmount() { document.removeEventListener('click', this._off); }
+  state = { query: '', view: this.props.startView ?? 'collection', article: 1, reaction: null, lang: 'bg', langOpen: false };
+  componentDidUpdate(pp) { if (pp.startView !== this.props.startView && this.props.startView) this.setState({ view: this.props.startView }); }
+  nav(view, extra) { this.setState({ view, reaction: null, ...extra }); window.scrollTo(0, 0); }
+  openQ = i => e => { e.preventDefault(); this.nav('article', { article: i, query: '' }); };
+  renderVals() {
+    const { view, article, reaction, lang, langOpen } = this.state;
+    const en = lang === 'en', t = T[lang];
+    const C = DATA.map((c,i) => { const n = parseInt(c.countLabel); return en ? { ...c, title: EN_C[i][0], desc: EN_C[i][1], by: c.by.replace('От ', 'By ').replace(' и още 1', ' and 1 other'), countLabel: n + (n===1?t.one:t.many) } : c; });
+    const QQ = Q.map((x,i) => en ? { ...x, text: EN_Q[i], title: x.n + '. ' + EN_Q[i] } : x);
+    const q = this.state.query.trim().toLowerCase();
+    const collections = (q ? C.filter(c => (c.title+' '+c.desc).toLowerCase().includes(q)) : C)
+      .map(c => ({ ...c, onClick: c.slug.startsWith('12276517') ? e => { e.preventDefault(); this.nav('collection', { query: '' }); } : undefined }));
+    const articleHits = q ? QQ.map((x,i) => ({ title: x.title, text: x.text, open: this.openQ(i) })).filter(x => x.text.toLowerCase().includes(q)) : [];
+    const cur = QQ[article], bg = BODY['11018463'];
+    const secs = bg.sections.map(([n0,title,items],i) => en ? [n0, EN_BODY.sections[i][0], EN_BODY.sections[i][1]] : [n0,title,items]);
+    const art = {
+      title: cur.title, href: cur.href,
+      lead: en ? EN_BODY.lead : bg.lead, hasLead: true, date: t.date,
+      hasBody: true, noBody: false,
+      sections: secs.map(([n0,title,items]) => { const num = cur.n + n0.slice(n0.indexOf('.')); return { num, title, id: 'sec-'+num, items: items.map(rt),
+        jump: e => { e.preventDefault(); const el = document.getElementById('sec-'+num); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 24, behavior: 'smooth' }); } }; }),
+    };
+    const R = [['bad','ph ph-smiley-sad'],['meh','ph ph-smiley-meh'],['good','ph ph-smiley']];
+    const isHome = view === 'home' || q.length > 0;
+    return {
+      t, langOpen, langLabel: en ? 'English' : 'Български', langFlag: 'https://flagcdn.com/' + (en ? 'gb' : 'bg') + '.svg',
+      toggleLang: () => this.setState(s => ({ langOpen: !s.langOpen })),
+      langs: [['bg','Български'],['en','English']].map(([k,label]) => ({ label, flag: 'https://flagcdn.com/' + (k === 'en' ? 'gb' : 'bg') + '.svg', on: k === lang, pick: () => this.setState({ lang: k, langOpen: false }) })),
+      query: this.state.query, hasQuery: q.length > 0,
+      isHome, isCollection: !isHome && view === 'collection', isArticle: !isHome && view === 'article',
+      headerPad: isHome ? '24px 24px 64px' : '20px 24px', headerGap: isHome ? '56px' : '20px', searchH: isHome ? '56px' : '48px',
+      collections, empty: collections.length === 0 && articleHits.length === 0,
+      articleHits, hasArticleHits: articleHits.length > 0, articleHitsLabel: String(articleHits.length),
+      questions: QQ.map((x,i) => ({ n: x.n, text: x.text, open: this.openQ(i) })),
+      art,
+      prev: article > 0 ? { title: QQ[article-1].title, open: this.openQ(article-1) } : null,
+      next: article < QQ.length-1 ? { title: QQ[article+1].title, open: this.openQ(article+1) } : null,
+      related: QQ.map((x,i) => ({ title: x.title, open: this.openQ(i), i })).filter(x => x.i !== article).slice(Math.max(0, Math.min(article-2, QQ.length-6)), Math.max(0, Math.min(article-2, QQ.length-6)) + 5),
+      feedbackLabel: reaction ? t.thanks : t.ask,
+      reactions: R.map(([k,icon],i) => ({ icon, label: t.r[i], bg: reaction === k ? 'rgb(170,225,201)' : '#fff', border: reaction === k ? 'rgb(170,225,201)' : 'rgba(0,0,0,0.1)', pick: () => this.setState({ reaction: k }) })),
+      onQuery: e => this.setState({ query: e.target.value }),
+      clearQuery: e => { e.preventDefault(); this.setState({ query: '' }); },
+      goHome: e => { e.preventDefault(); this.nav('home', { query: '' }); },
+      goCollection: e => { e.preventDefault(); this.nav('collection'); },
+    };
+  }
+}
+</script>
+</body>
+</html>
