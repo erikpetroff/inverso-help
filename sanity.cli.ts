@@ -1,10 +1,10 @@
 import { defineCliConfig } from "sanity/cli";
-import { studioDataset, studioProjectId } from "./src/sanity/studio-env";
+import { dataset, projectId } from "./src/sanity/env";
 
 export default defineCliConfig({
   api: {
-    projectId: studioProjectId,
-    dataset: studioDataset,
+    projectId,
+    dataset,
   },
   studioHost: "inverso-help",
   deployment: {
