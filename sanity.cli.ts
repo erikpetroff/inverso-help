@@ -8,6 +8,7 @@ export default defineCliConfig({
   },
   studioHost: "inverso-help",
   deployment: {
+    appId: "yqf0j8kvvx977ql6fzfjkld5",
     autoUpdates: true,
   },
 });
